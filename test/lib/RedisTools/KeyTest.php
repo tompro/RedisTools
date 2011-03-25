@@ -69,15 +69,6 @@ class KeyTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 	
-	public function testIfKeyExistsOnEmptyKey()
-	{
-		$this->assertFalse(
-			$this->object->exists(),
-			'Key should not exist but did not return false. '
-		);
-	}
-
-
 	public function testGettingTtlOnEmptyValue()
 	{
 		$this->assertEquals(
@@ -190,22 +181,6 @@ class KeyTest extends \PHPUnit_Framework_TestCase
 			'Wrong value read from a Redis key. '
 		);
 	}
-	
-	public function testDeletingValue()
-	{
-		$this->object->set($this->testValue);
-		
-		$this->assertEquals(
-			1, $this->object->delete(), 
-			'Value should have been deleted but was not. '
-		);
-		
-		$this->assertEquals(
-			0, $this->object->delete(), 
-			'Value should have already been deleted but was present. '
-		);
-	}
-	
 	
 }
 

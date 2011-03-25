@@ -1,5 +1,7 @@
 <?php
 /**
+ * Basic Redis function common for all Redis data constructs
+ * 
  * @author Thomas Profelt <office@protom.eu>
  * @since 24.03.2011
  */
@@ -77,7 +79,33 @@ class Dataconstruct
 	{
 		$this->redis = $redis;
 	}
+	
+	/**
+	 * deletes this key and value
+	 * 
+	 * @return boolean - success
+	 */
+	public function delete()
+	{
+		return $this->getRedis()->delete( $this->getKey() );
+	}
+	
+	
+	/**
+	 * determine wether this key already exists
+	 * @return boolean
+	 */
+	public function exists()
+	{
+		return $this->getRedis()->exists( $this->getKey() );
+	}
 
+	/**
+	 * validates a given key
+	 * 
+	 * @param string $key
+	 * @return string
+	 */
 	protected function validateKey( $key )
 	{
 		if ( ! is_string($key) ) 

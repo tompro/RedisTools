@@ -14,6 +14,8 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected $object;
 
+	protected $testKey = 'testkey';
+	
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
@@ -94,6 +96,42 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		$object = new \stdClass();
 		$this->object->setRedis($object);
 		$this->assertEquals($object, $this->object->getRedis());
+	}
+	
+	
+	public function testDeletingValue()
+	{
+		$redis = $this->getRedis();
+		$this->object->setRedis($redis);
+		$this->object->setKey($this->testKey);
+		$redis->set($this->testKey, 'asdf');
+		
+		$this->assertEquals(
+			1, $this->object->delete(), 
+			'Value should have been deleted but was not. '
+		);
+		
+		$this->assertEquals(
+			0, $this->object->delete(), 
+			'Value should have already been deleted but was present. '
+		);
+	}
+	
+	public function testIfKeyExistsOnEmptyKey()
+	{
+		$this->object->setRedis($this->getRedis());
+		$this->object->setKey($this->testKey);
+		$this->assertFalse(
+			$this->object->exists(),
+			'Key should not exist but did not return false. '
+		);
+	}
+	
+	protected function getRedis()
+	{
+		$redis = new \Redis();
+		$redis->pconnect('127.0.0.1');
+		return $redis;
 	}
 
 }

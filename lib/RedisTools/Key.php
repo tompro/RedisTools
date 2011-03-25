@@ -48,16 +48,6 @@ class Key extends Core\Dataconstruct
 	}
 	
 	/**
-	 * deletes this key and value
-	 * 
-	 * @return boolean - success
-	 */
-	public function delete()
-	{
-		return $this->getRedis()->delete( $this->getKey() );
-	}
-	
-	/**
 	 * returns the remaining time to live of this key in 
 	 * seconds. Returns -1 if key has no expire date
 	 * 
@@ -66,15 +56,6 @@ class Key extends Core\Dataconstruct
 	public function ttl()
 	{
 		return $this->getRedis()->ttl( $this->getKey() );
-	}
-	
-	/**
-	 * determine wether this key already exists
-	 * @return boolean
-	 */
-	public function exists()
-	{
-		return $this->getRedis()->exists( $this->getKey() );
 	}
 	
 	/**
