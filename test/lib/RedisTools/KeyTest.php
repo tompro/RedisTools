@@ -1,6 +1,6 @@
 <?php
 
-namespace PRTools;
+namespace RedisTools;
 
 /**
  * Test class for Key.

@@ -5,7 +5,7 @@
  * @author Thomas Profelt <office@protom.eu>
  * @since 24.03.2011
  */
-class PRTools
+class RedisTools
 {
 	/**
 	 * the default Redis instance

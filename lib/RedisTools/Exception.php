@@ -1,12 +1,11 @@
 <?php
 /**
- * 
  * @author Thomas Profelt <office@protom.eu>
  * @since 23.03.2011
  */
-namespace PRTools;
+namespace RedisTools;
 
-class Manager
+class Exception extends \Exception
 {
 
 	

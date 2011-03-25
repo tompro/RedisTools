@@ -6,7 +6,7 @@
  * @since 24.03.2011
  * @version 1.0
  */
-namespace PRTools;
+namespace RedisTools;
 
 class Key extends Core\Dataconstruct
 {

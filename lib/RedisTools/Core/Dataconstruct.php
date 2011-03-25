@@ -3,7 +3,7 @@
  * @author Thomas Profelt <office@protom.eu>
  * @since 24.03.2011
  */
-namespace PRTools\Core;
+namespace RedisTools\Core;
 
 class Dataconstruct
 {
@@ -60,7 +60,7 @@ class Dataconstruct
 			return $this->redis;
 		}
 		
-		throw new \PRTools\Exception(
+		throw new \RedisTools\Exception(
 			'No Redis instance provided!'
 		);
 	}
@@ -90,13 +90,13 @@ class Dataconstruct
 	}
 	
 	/**
-	 * throw a PRTools Exception with a message
+	 * throw a RedisTools Exception with a message
 	 * 
 	 * @param string $message 
 	 */
-	protected function throwException( $message = 'An error occured in PRTools' )
+	protected function throwException( $message = 'An error occured in RedisTools' )
 	{
-		throw new \PRTools\Exception( $message );
+		throw new \RedisTools\Exception( $message );
 	}
 	
 }

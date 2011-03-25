@@ -1,6 +1,6 @@
 <?php
 
-namespace PRTools\Core;
+namespace RedisTools\Core;
 
 /**
  * Test class for Dataconstruct.
@@ -24,7 +24,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PRTools\Exception
+	 * @expectedException RedisTools\Exception
 	 */
 	public function testConstructWithKey()
 	{
@@ -43,7 +43,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 
 
 	/**
-	 * @expectedException PRTools\Exception
+	 * @expectedException RedisTools\Exception
 	 */
 	public function testGetKeyWithNullValue()
 	{
@@ -51,7 +51,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @expectedException PRTools\Exception
+	 * @expectedException RedisTools\Exception
 	 */
 	public function testGetKeyWithIntValue()
 	{
@@ -60,7 +60,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @expectedException PRTools\Exception
+	 * @expectedException RedisTools\Exception
 	 */
 	public function testGetKeyWithInvalidStringValue()
 	{
@@ -82,7 +82,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException PRTools\Exception
+	 * @expectedException RedisTools\Exception
 	 */
 	public function testGetRedisNoInstanceSet()
 	{
