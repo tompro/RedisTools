@@ -48,17 +48,6 @@ class Key extends Core\Dataconstruct
 	}
 	
 	/**
-	 * returns the remaining time to live of this key in 
-	 * seconds. Returns -1 if key has no expire date
-	 * 
-	 * @return int - the remaining time to live in seconds 
-	 */
-	public function ttl()
-	{
-		return $this->getRedis()->ttl( $this->getKey() );
-	}
-	
-	/**
 	 * sets a new $value to the key if the key does not exist
 	 * 
 	 * @param string $value
@@ -70,20 +59,5 @@ class Key extends Core\Dataconstruct
 			$this->getKey(), $value );
 	}
 	
-	/**
-	 * set an expiration date for this key.
-	 * Accepts a unix timestamp. Returns false if key
-	 * does not exist.
-	 * 
-	 * @param int $timestamp
-	 * @return boolean - success 
-	 */
-	public function expireAt( $timestamp )
-	{
-		return $this->getRedis()->expireAt( 
-			$this->getKey(), 
-			$timestamp 
-		);
-	}
 	
 }

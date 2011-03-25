@@ -99,6 +99,33 @@ class Dataconstruct
 	{
 		return $this->getRedis()->exists( $this->getKey() );
 	}
+	
+	/**
+	 * returns the remaining time to live of this key in 
+	 * seconds. Returns -1 if key has no expire date
+	 * 
+	 * @return int - the remaining time to live in seconds 
+	 */
+	public function ttl()
+	{
+		return $this->getRedis()->ttl( $this->getKey() );
+	}
+	
+	/**
+	 * set an expiration date for this key.
+	 * Accepts a unix timestamp. Returns false if key
+	 * does not exist.
+	 * 
+	 * @param int $timestamp
+	 * @return boolean - success 
+	 */
+	public function expireAt( $timestamp )
+	{
+		return $this->getRedis()->expireAt( 
+			$this->getKey(), 
+			$timestamp 
+		);
+	}
 
 	/**
 	 * validates a given key

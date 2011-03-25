@@ -127,6 +127,87 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 	
+	public function testGettingTtlOnEmptyValue()
+	{
+		$this->setupObject();
+		
+		$this->assertEquals(
+			-1, $this->object->ttl(),
+			'Ttl of empty key should return -1 but was not. '
+		);
+	}
+	
+	public function testGettingTtlOfNotExpiringValue()
+	{
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'asdf');
+		
+		$this->assertEquals(
+			-1, $this->object->ttl(),
+			'Ttl of non expiring key should return -1 but was not. '
+		);
+	}
+	
+	public function testSettingExpireValue()
+	{
+		$this->setupObject();
+		//$this->object->set($this->testValue);
+		
+		$offset = 2;
+		
+		$this->assertTrue(
+			$this->object->expireAt( \time() + $offset ),
+			'Setting expire date was not successful. '
+		);
+		
+		$ttl = $this->object->ttl();
+		$this->assertEquals(
+			$offset,
+			$ttl,
+			'TTL should be ' . $offset . ' but was ' . $ttl . '. '
+		);
+	}
+	
+	public function testSettingExpireValueInThePast()
+	{
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'asdf');
+		
+		//$this->object->set($this->testValue);
+		$this->assertTrue(
+			$this->object->expireAt( 1 ),
+			'Setting expire value in the past was not posible. '
+		);
+		
+		$this->assertFalse(
+			$this->object->exists(),
+			'Setting ttl value in the past should expire key immediately but did not. '
+		);
+		
+		$this->object->delete();
+	}
+	
+	public function testSettingExpireValueOnEmptyKey()
+	{
+		$this->setupObject();
+		$this->assertFalse(
+			$this->object->expireAt( \time() + 2 ),
+			'Setting expire date should not be possible on empty keys. '
+		);
+	}
+	
+	protected function setupObject()
+	{
+		$this->object->setRedis($this->getRedis());
+		$this->object->setKey($this->testKey);
+	}
+	
+	protected function tearDownObject()
+	{
+		$this->object->delete();
+	}
+
+
 	protected function getRedis()
 	{
 		$redis = new \Redis();
