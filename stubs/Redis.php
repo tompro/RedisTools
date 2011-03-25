@@ -1,7 +1,6 @@
 <?php
 /**
- * 
- * @package Protom_
+ * Redis.php method stub
  * @author Thomas Profelt <office@protom.eu>
  * @since 24.03.2011
  */
