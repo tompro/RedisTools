@@ -17,9 +17,14 @@ class Lock extends Core\Dataconstruct
 	 * 
 	 * @return boolean
 	 */
-	public function getLock()
+	public function getLock( $ttl = null )
 	{
-		return $this->getRedis()->setnx( $this->getKey(), 1 );
+		$result = $this->getRedis()->setnx( $this->getKey(), 1 );
+		if($result && $ttl !== null)
+		{
+			$this->expireAt(\time() + $ttl);
+		}
+		return $result;
 	}
 	
 	/**

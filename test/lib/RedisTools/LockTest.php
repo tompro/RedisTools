@@ -62,6 +62,24 @@ class LockTest extends \PHPUnit_Framework_TestCase
 		
 	}
 	
+	public function testLockWithTimeToLive()
+	{
+		$this->assertTrue(
+			$this->object->getLock(1)
+		);
+		
+		$this->assertFalse(
+			$this->object->getLock(30)
+		);
+		
+		// set expire to past
+		$this->object->expireAt(100);
+		
+		$this->assertTrue(
+			$this->object->getLock(30)
+		);
+	}
+	
 }
 
 ?>
