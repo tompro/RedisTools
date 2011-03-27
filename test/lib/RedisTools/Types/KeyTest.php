@@ -1,6 +1,6 @@
 <?php
 
-namespace RedisTools;
+namespace RedisTools\Type;
 
 /**
  * Test class for Key.

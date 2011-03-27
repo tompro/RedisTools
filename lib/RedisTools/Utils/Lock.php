@@ -7,9 +7,9 @@
  * @since 25.03.2011
  * @version 1.0
  */
-namespace RedisTools;
+namespace RedisTools\Utils;
 
-class Lock extends Core\Dataconstruct
+class Lock extends \RedisTools\Core\Dataconstruct
 {
 	
 	/**

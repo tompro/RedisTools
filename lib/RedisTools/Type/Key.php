@@ -6,11 +6,10 @@
  * @since 24.03.2011
  * @version 1.0
  */
-namespace RedisTools;
+namespace RedisTools\Type;
 
-class Key extends Core\Dataconstruct
+class Key extends \RedisTools\Core\Dataconstruct
 {
-	
 	/**
 	 * set a simple string $value into this Key
 	 * the optional $ttl lets this Key expire after
@@ -58,6 +57,19 @@ class Key extends Core\Dataconstruct
 		return $this->getRedis()->setnx( 
 			$this->getKey(), $value );
 	}
+	
+	/**
+	 * TODO: implement methods:
+	 * 
+	 * - getSet
+	 * - append
+	 * - getRange
+	 * - setRange
+	 * - strlen
+	 * - getBit
+	 * - setBit
+	 * 
+	 */
 	
 	
 }

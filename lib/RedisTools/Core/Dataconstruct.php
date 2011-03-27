@@ -145,6 +145,16 @@ class Dataconstruct
 	}
 	
 	/**
+	 *  TODO: implement methods:
+	 * 
+	 * - setTimeout, expire
+	 * - renameNx
+	 * - rename, renameKey
+	 * - move
+	 * - type
+	 */
+	
+	/**
 	 * throw a RedisTools Exception with a message
 	 * 
 	 * @param string $message 
