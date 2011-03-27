@@ -34,7 +34,7 @@ class Hash extends \RedisTools\Core\Dataconstruct
 	 * @param string $key
 	 * @return string 
 	 */
-	public function get( $key )
+	public function getValue( $key )
 	{
 		return $this->getRedis()->hGet( $this->getKey(), $key );
 	}

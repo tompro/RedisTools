@@ -105,11 +105,23 @@ class Dataconstruct
 	 * 
 	 * @return int - the remaining time to live in seconds 
 	 */
-	public function ttl()
+	public function getTtl()
 	{
 		return $this->getRedis()->ttl( $this->getKey() );
 	}
 	
+	/**
+	 * sets the remaining time to live in seconds for this dataconstruct
+	 * 
+	 * @param int $seconds
+	 * @return boolean - success 
+	 */
+	public function setTtl( $seconds )
+	{
+		return $this->getRedis()->expire($this->getKey(), $seconds);
+	}
+
+
 	/**
 	 * set an expiration date for this key.
 	 * Accepts a unix timestamp. Returns false if key
@@ -124,6 +136,22 @@ class Dataconstruct
 			$this->getKey(), 
 			$timestamp 
 		);
+	}
+	
+	/**
+	 * renames the key of this dataconstruct
+	 * 
+	 * @param string $newKey 
+	 * @return boolean - success (also true on empty key)
+	 */
+	public function renameKey( $newKey )
+	{
+		$result = $this->getRedis()->renameKey($this->getKey(), $newKey);
+		if($result)
+		{
+			$this->setKey($newKey);
+		}
+		return $result;
 	}
 
 	/**
@@ -146,9 +174,7 @@ class Dataconstruct
 	/**
 	 *  TODO: implement methods:
 	 * 
-	 * - setTimeout, expire
 	 * - renameNx
-	 * - rename, renameKey
 	 * - move
 	 * - type
 	 */

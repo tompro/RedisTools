@@ -19,7 +19,7 @@ class Key extends \RedisTools\Core\Dataconstruct
 	 * @param int $ttl - the time to live in seconds
 	 * @return boolean - success of operation
 	 */
-	public function set( $value, $ttl = null )
+	public function setValue( $value, $ttl = null )
 	{
 		if( $ttl === null )
 		{
@@ -41,7 +41,7 @@ class Key extends \RedisTools\Core\Dataconstruct
 	 * 
 	 * @return string | boolean false if key does not exists
 	 */
-	public function get()
+	public function getValue()
 	{
 		return $this->getRedis()->get( $this->getKey() );
 	}
@@ -52,7 +52,7 @@ class Key extends \RedisTools\Core\Dataconstruct
 	 * @param string $value
 	 * @return boolean - success 
 	 */
-	public function setIfNotExists( $value )
+	public function setValueIfNotExists( $value )
 	{
 		return $this->getRedis()->setnx( 
 			$this->getKey(), $value );

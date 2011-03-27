@@ -132,7 +132,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		$this->setupObject();
 		
 		$this->assertEquals(
-			-1, $this->object->ttl(),
+			-1, $this->object->getTtl(),
 			'Ttl of empty key should return -1 but was not. '
 		);
 	}
@@ -143,7 +143,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		$this->getRedis()->set($this->testKey, 'asdf');
 		
 		$this->assertEquals(
-			-1, $this->object->ttl(),
+			-1, $this->object->getTtl(),
 			'Ttl of non expiring key should return -1 but was not. '
 		);
 	}
@@ -160,7 +160,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 			'Setting expire date was not successful. '
 		);
 		
-		$ttl = $this->object->ttl();
+		$ttl = $this->object->getTtl();
 		$this->assertEquals(
 			$offset,
 			$ttl,
@@ -196,6 +196,58 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 	
+	public function testSettingTtlOnEmptyKey()
+	{
+		$this->setupObject();
+		$this->assertFalse(
+			$this->object->setTtl( 2 )
+		);
+	}
+	
+	public function testSettingTtl()
+	{
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'asdf');
+		
+		$this->assertTrue(
+			$this->object->setTtl( 2 )
+		);
+		
+		$this->assertEquals(2,
+			$this->object->getTtl()
+		);
+	}
+	
+	public function testRenameKeyOnEmptyKey()
+	{
+		$this->setupObject();
+		$this->assertTrue(
+			$this->object->renameKey( 'asdf' )
+		);
+	}
+	
+	public function testRenameKey()
+	{
+		$this->setupObject();
+		$this->assertEquals($this->testKey, $this->object->getKey());
+		
+		$this->getRedis()->set($this->testKey, 'asdf');
+		$this->assertTrue(
+			$this->object->renameKey( 'qwer' )
+		);
+		
+		$this->assertEquals('qwer', 
+			$this->object->getKey()
+		);
+		
+		$this->assertEquals('asdf',
+			$this->getRedis()->get($this->object->getKey())
+		);
+		
+		
+	}
+
+
 	protected function setupObject()
 	{
 		$this->object->setRedis($this->getRedis());

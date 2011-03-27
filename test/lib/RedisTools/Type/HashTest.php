@@ -82,7 +82,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	public function testGetValueOfNonExistingHash()
 	{
 		$this->assertFalse(
-			$this->object->get($this->testKey),
+			$this->object->getValue($this->testKey),
 			'Getting key of  non existing hash should return false. '
 		);
 	}
@@ -92,7 +92,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 		$this->object->set($this->testKey, $this->testValue);
 		
 		$this->assertFalse(
-			$this->object->get('somekey'),
+			$this->object->getValue('somekey'),
 			'Getting non existing key should return false. '
 		);
 	}
@@ -102,7 +102,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 		$this->object->set($this->testKey, $this->testValue);
 		
 		$this->assertEquals($this->testValue,
-			$this->object->get($this->testKey),
+			$this->object->getValue($this->testKey),
 			'Getting key should have returned ' . $this->testValue . '. '
 		);
 	}
@@ -363,7 +363,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 			$this->object->incrementValue( $this->testKey, 3 )
 		);
 		
-		$this->assertEquals(4, $this->object->get($this->testKey));
+		$this->assertEquals(4, $this->object->getValue($this->testKey));
 	}
 	
 	public function testGetMultiWithEmptyKeysArray()
