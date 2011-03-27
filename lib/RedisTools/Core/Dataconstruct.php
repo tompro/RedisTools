@@ -70,8 +70,7 @@ class Dataconstruct
 	/**
 	 * the connected redis instance to be used
 	 * the instance has to implement all functions
-	 * that are provide by the 
-	 * <ahref="https://github.com/nicolasff/phpredis">phpredis plugin</a>
+	 * that are provide by phpredis {@link https://github.com/nicolasff/phpredis}
 	 * 
 	 * @param mixed $redis 
 	 */
@@ -81,7 +80,7 @@ class Dataconstruct
 	}
 	
 	/**
-	 * deletes this key and value
+	 * deletes this dataconstruct from Redis
 	 * 
 	 * @return boolean - success
 	 */
@@ -92,7 +91,7 @@ class Dataconstruct
 	
 	
 	/**
-	 * determine wether this key already exists
+	 * determine wether a dataconstruct with the configured key already exists
 	 * @return boolean
 	 */
 	public function exists()
