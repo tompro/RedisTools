@@ -144,4 +144,42 @@ class StringTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 	
+	public function testGetLengthOnEmptyString()
+	{
+		$this->assertEquals(0,
+			$this->object->getByteLength()
+		);
+	}
+	
+	public function testGetLengthOnWrongRedisType()
+	{
+		$this->object->getRedis()->hSet($this->testKey, 'asdf', 'asdf');
+		$this->assertFalse(
+			$this->object->getByteLength()
+		);
+	}
+	
+	public function testGetLengthOnInteger()
+	{
+		$this->object->setValue(4);
+		$this->assertEquals(1,
+			$this->object->getByteLength()
+		);
+	}
+	
+	public function testGetLengthOnString()
+	{
+		$this->object->setValue('asdf');
+		$this->assertEquals(4,
+			$this->object->getByteLength()
+		);
+	}
+	
+	public function testGetLengthOnStringWithSpecialChars()
+	{
+		$this->object->setValue('öäüà');
+		$this->assertEquals(8,
+			$this->object->getByteLength()
+		);
+	}
 }

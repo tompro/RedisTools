@@ -1,6 +1,6 @@
 <?php
 /**
- * manages the functionality of simple key-value types
+ * manages the functionality of simple Redis string types
  * 
  * @author Thomas Profelt <office@protom.eu>
  * @since 24.03.2011
@@ -70,15 +70,21 @@ class String extends \RedisTools\Core\Dataconstruct
 	}
 	
 	/**
+	 * returns the length of the keys content in bytes
+	 * 
+	 * @return int - false if key is of wrong type
+	 */
+	public function getByteLength()
+	{
+		return $this->getRedis()->strlen($this->getKey());
+	}
+	
+	/**
 	 * TODO: implement methods:
 	 * 
 	 * - append
-	 * - getRange
-	 * - setRange
-	 * - strlen
-	 * - getBit
-	 * - setBit
-	 * 
+	 * - getRange (substring)
+	 * - setRange (stringreplace)
 	 */
 	
 	
