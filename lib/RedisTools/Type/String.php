@@ -8,7 +8,7 @@
  */
 namespace RedisTools\Type;
 
-class Key extends \RedisTools\Core\Dataconstruct
+class String extends \RedisTools\Core\Dataconstruct
 {
 	/**
 	 * set a simple string $value into this Key
@@ -47,6 +47,17 @@ class Key extends \RedisTools\Core\Dataconstruct
 	}
 	
 	/**
+	 * set a new value to this key and returns the old value
+	 * 
+	 * @param string $value
+	 * @return string - false if key is empty 
+	 */
+	public function getSetValue( $value )
+	{
+		return $this->getRedis()->getSet($this->getKey(), $value);
+	}
+
+	/**
 	 * sets a new $value to the key if the key does not exist
 	 * 
 	 * @param string $value
@@ -61,7 +72,6 @@ class Key extends \RedisTools\Core\Dataconstruct
 	/**
 	 * TODO: implement methods:
 	 * 
-	 * - getSet
 	 * - append
 	 * - getRange
 	 * - setRange
