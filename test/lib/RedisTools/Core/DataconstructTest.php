@@ -243,10 +243,134 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('asdf',
 			$this->getRedis()->get($this->object->getKey())
 		);
-		
-		
 	}
+	
+//	public function testRenameKeyNxOnEmptyKey()
+//	{
+//		$this->setupObject();
+//		$this->assertFalse(
+//			$this->object->renameKeyNx( 'asdf' )
+//		);
+//	}
+//
+//	public function testRenameKeyNxToNxKey()
+//	{
+//		$this->setupObject();
+//		$this->getRedis()->set($this->testKey, 'value');
+//		$this->getRedis()->delete('newkey1');
+//		
+//		$this->assertFalse(
+//			$this->getRedis()->exists('newkey1'),
+//			'newkey1 should not exist but did. '
+//		);
+//		
+//		$this->assertTrue(
+//			$this->object->renameKeyNx( 'newkey1' )
+//		);
+//		
+//	}
+//	
+//	public function testRenameKeyNxToExistingKey()
+//	{
+//		$this->setupObject();
+//		$this->getRedis()->set($this->testKey, 'value');
+//		$this->getRedis()->set('newkey1', 'value2');
+//		
+//		$this->assertFalse(
+//			$this->object->renameKeyNx( 'newkey1' )
+//		);
+//		
+//		$this->getRedis()->delete('newkey1');
+//	}
 
+	public function testGetTypeOnEmptyKey()
+	{
+		$this->setupObject();
+		$this->assertEquals(\Redis::REDIS_NOT_FOUND,
+			$this->object->getType()
+		);
+	}
+	
+	public function testGetTypeOnKey()
+	{
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'asdf');
+		$this->assertEquals(\Redis::REDIS_STRING,
+			$this->object->getType()
+		);
+	}
+	
+	public function testGetTypeOnHash()
+	{
+		$this->setupObject();
+		$this->object->delete();
+		
+		$this->getRedis()->hSet($this->testKey, 'asdf', 'asdf');
+		$this->assertEquals(\Redis::REDIS_HASH,
+			$this->object->getType()
+		);
+	}
+	
+	public function testGetTypeOnSet()
+	{
+		$this->setupObject();
+		$this->object->delete();
+		
+		$this->getRedis()->sAdd($this->testKey, 'asdf');
+		$this->assertEquals(\Redis::REDIS_SET,
+			$this->object->getType()
+		);
+	}
+	
+	public function testGetTypeOnList()
+	{
+		$this->setupObject();
+		$this->object->delete();
+		
+		$this->getRedis()->lPush($this->testKey, 'asdf');
+		$this->assertEquals(\Redis::REDIS_LIST,
+			$this->object->getType()
+		);
+	}
+	
+	public function testGetTypeOnZset()
+	{
+		$this->setupObject();
+		$this->object->delete();
+		
+		$this->getRedis()->zAdd($this->testKey, 1, 'asdf');
+		$this->assertEquals(\Redis::REDIS_ZSET,
+			$this->object->getType()
+		);
+	}
+	
+	public function testMoveToDbNxKey()
+	{
+		$this->setupObject();
+		$this->assertFalse(
+			$this->object->moveToDb( 1 )
+		);
+	}
+	
+	public function testMoveToDb()
+	{
+		$this->getRedis()->select(1);
+		$this->getRedis()->delete($this->testKey);
+		$this->getRedis()->select(0);
+		
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'asdf');
+		
+		$this->assertTrue($this->object->exists());
+		
+		$this->assertTrue(
+			$this->object->moveToDb( 1 )
+		);
+		
+		$this->assertFalse($this->object->exists());
+		$this->getRedis()->select(1);
+		$this->assertTrue($this->object->exists());
+	}
 
 	protected function setupObject()
 	{

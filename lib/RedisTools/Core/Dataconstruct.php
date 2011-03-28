@@ -139,6 +139,17 @@ class Dataconstruct
 	}
 	
 	/**
+	 * returns the type of this dataconstruct
+	 * 
+	 * @return int - the type constant eg. Redis::REDIS_LIST
+	 */
+	public function getType()
+	{
+		return $this->getRedis()->type( $this->getKey() );
+	}
+
+
+	/**
 	 * renames the key of this dataconstruct
 	 * 
 	 * @param string $newKey 
@@ -152,6 +163,17 @@ class Dataconstruct
 			$this->setKey($newKey);
 		}
 		return $result;
+	}
+	
+	/**
+	 * moves this dataconstruct to another database
+	 * 
+	 * @param int $db - the db to move to
+	 * @return boolean - success
+	 */
+	public function moveToDb( $db )
+	{
+		return $this->getRedis()->move($this->getKey(), 1);
 	}
 
 	/**
@@ -172,14 +194,6 @@ class Dataconstruct
 	}
 	
 	/**
-	 *  TODO: implement methods:
-	 * 
-	 * - renameNx
-	 * - move
-	 * - type
-	 */
-	
-	/**
 	 * throw a RedisTools Exception with a message
 	 * 
 	 * @param string $message 
@@ -189,4 +203,26 @@ class Dataconstruct
 		throw new \RedisTools\Exception( $message );
 	}
 	
+	/****************************
+	 * 
+	 *  TODO: implement methods:
+	 * 
+	 * **************************
+	 * 
+	 * - renameNx
+	 *
+	 * to be implemented later when 
+	 * phpredis returns valid result
+	 * 
+	 */
+	
+//	public function renameKeyNx( $newKey )
+//	{
+//		$result = $this->getRedis()->renameNx( $this->getKey(), $newKey );
+//		if($result)
+//		{
+//			$this->setKey( $newKey );
+//		}
+//		return $result;
+//	}
 }
