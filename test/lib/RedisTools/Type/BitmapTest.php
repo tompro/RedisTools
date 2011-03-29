@@ -25,7 +25,7 @@ class BitmapTest extends \PHPUnit_Framework_TestCase
 		$redis = new \Redis();
 		$redis->pconnect('127.0.0.1');
 		
-		$this->object = new Bitmap( $this->testKey );
+		$this->object = new Bitmap( $this->testKey, $redis );
 	}
 
 	/**
@@ -37,26 +37,53 @@ class BitmapTest extends \PHPUnit_Framework_TestCase
 		$this->object->delete();
 	}
 
-	/**
-	 * @todo Implement testSetBit().
-	 */
-	public function testSetBit()
+	public function testSetBitToFirstPosition()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
+		$this->assertEquals(0,
+			$this->object->setBit( 0, 1 )
+		);
+		
+		$this->assertEquals(1,
+			$this->object->setBit( 0, 1 )
+		);
+		
+		$this->assertEquals(1,
+			$this->object->setBit( 0, 0 )
+		);
+		
+		$this->assertEquals(1, 
+			$this->object->getRedis()->strlen($this->testKey)
+		);
+	}
+	
+	public function testSetBitToOtherPosition()
+	{
+		$this->assertEquals(0,
+			$this->object->setBit( 9, 1 )
+		);
+		
+		$this->assertEquals(2, 
+			$this->object->getRedis()->strlen($this->testKey),
+			'Every 8 bits one byte should be added. So 9 bits should be 2 chars. '
 		);
 	}
 
-	/**
-	 * @todo Implement testGetBit().
-	 */
 	public function testGetBit()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		$this->object->setBit( 5, 1);
+		$this->object->setBit( 2, 1);
+		$this->object->setBit( 10, 1);
+		$this->object->setBit( 445, 1);
+		
+		$this->assertEquals(1, $this->object->getBit(5));
+		$this->assertEquals(1, $this->object->getBit(2));
+		$this->assertEquals(1, $this->object->getBit(10));
+		$this->assertEquals(1, $this->object->getBit(445));
+		
+		$this->assertEquals(0, $this->object->getBit(1));
+		$this->assertEquals(0, $this->object->getBit(100));
+		$this->assertEquals(0, $this->object->getBit(11));
+		$this->assertEquals(0, $this->object->getBit(5268));
 	}
 
 }

@@ -147,7 +147,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	public function testGetLengthOnEmptyString()
 	{
 		$this->assertEquals(0,
-			$this->object->getByteLength()
+			$this->object->getLength()
 		);
 	}
 	
@@ -155,7 +155,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->getRedis()->hSet($this->testKey, 'asdf', 'asdf');
 		$this->assertFalse(
-			$this->object->getByteLength()
+			$this->object->getLength()
 		);
 	}
 	
@@ -163,7 +163,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->setValue(4);
 		$this->assertEquals(1,
-			$this->object->getByteLength()
+			$this->object->getLength()
 		);
 	}
 	
@@ -171,7 +171,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->setValue('asdf');
 		$this->assertEquals(4,
-			$this->object->getByteLength()
+			$this->object->getLength()
 		);
 	}
 	
@@ -179,7 +179,103 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->setValue('öäüà');
 		$this->assertEquals(8,
-			$this->object->getByteLength()
+			$this->object->getLength()
 		);
 	}
+	
+	public function testAppendToEmptyString()
+	{
+		$result = $this->object->append( 'append' );
+		$this->assertType('integer', $result);
+		$this->assertEquals(6, $result);
+		$this->assertEquals('append', $this->object->getValue());
+	}
+	
+	public function testAppendToExistingString()
+	{
+		$this->object->setValue('prepend');
+		$result = $this->object->append( 'append' );
+		$this->assertType('integer', $result);
+		$this->assertEquals(13, $result);
+		$this->assertEquals('prependappend', $this->object->getValue());
+	}
+	
+	public function testAppendNullToExistingString()
+	{
+		$this->object->setValue('prepend');
+		$result = $this->object->append(null);
+		$this->assertType('integer', $result);
+		$this->assertEquals(7, $result);
+		$this->assertEquals('prepend', $this->object->getValue());
+	}
+	
+	public function testGetSubstringFromEmptyString()
+	{
+		$this->assertEquals('',
+			$this->object->getSubstring(0)
+		);
+		
+		$this->assertEquals('',
+			$this->object->getSubstring(10)
+		);
+	}
+	
+	public function testGetSubstringWithDifferentParams()
+	{
+		$value = '123456789';
+		$this->object->setValue($value);
+		
+		$this->assertEquals( $value,
+			$this->object->getSubstring(0)
+		);
+		
+		$this->assertEquals('123',
+			$this->object->getSubstring(0, 2)
+		);
+		
+		$this->assertEquals('456',
+			$this->object->getSubstring(3, 5)
+		);
+		
+		$this->assertEquals('789',
+			$this->object->getSubstring(6)
+		);
+		
+		$this->assertEquals( $value,
+			$this->object->getValue()
+		);
+		
+		$this->object->setValue('öäü');
+		
+		$this->assertNotEquals('ä', $this->object->getSubstring(1, 1));
+	}
+	
+	public function testSetSubstringOnEmptyStringToFirstIndex()
+	{
+		$result = $this->object->setSubsting('asdf', 0);
+		$this->assertType('integer', $result);
+		$this->assertEquals(4, $result);
+		$this->assertEquals('asdf', $this->object->getValue());
+		
+		$result = $this->object->setSubsting('qwer', 2);
+		$this->assertEquals(6, $result);
+		$this->assertEquals('asqwer', $this->object->getValue());
+	}
+	
+	public function testSetSubstringOnEmptyStringToHigherIndex()
+	{
+		$result = $this->object->setSubsting('asdf', 2);
+		$this->assertType('integer', $result);
+		$this->assertEquals(6, $result);
+		$this->assertNotEquals('asdf', $this->object->getValue());
+	}
+	
+	public function testSetSubstring()
+	{
+		$result = $this->object->setValue('asdf');
+		$result = $this->object->setSubsting('qwer', 2);
+		$this->assertEquals(6, $result);
+		$this->assertEquals('asqwer', $this->object->getValue());
+	}
+	
 }
