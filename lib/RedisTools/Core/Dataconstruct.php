@@ -216,13 +216,13 @@ class Dataconstruct
 	 * 
 	 */
 	
-//	public function renameKeyNx( $newKey )
-//	{
-//		$result = $this->getRedis()->renameNx( $this->getKey(), $newKey );
-//		if($result)
-//		{
-//			$this->setKey( $newKey );
-//		}
-//		return $result;
-//	}
+	public function renameKeyNx( $newKey )
+	{
+		$result = $this->getRedis()->renameNx( $this->getKey(), $newKey );
+		if($result)
+		{
+			$this->setKey( $newKey );
+		}
+		return $result;
+	}
 }

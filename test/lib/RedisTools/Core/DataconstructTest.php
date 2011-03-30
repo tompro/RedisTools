@@ -245,48 +245,48 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 	
-//	public function testRenameKeyNxOnEmptyKey()
-//	{
-//		$this->setupObject();
-//		$this->assertFalse(
-//			$this->object->renameKeyNx( 'asdf' )
-//		);
-//	}
-//
-//	public function testRenameKeyNxToNxKey()
-//	{
-//		$this->setupObject();
-//		$this->getRedis()->set($this->testKey, 'value');
-//		$this->getRedis()->delete('newkey1');
-//		
-//		$this->assertFalse(
-//			$this->getRedis()->exists('newkey1'),
-//			'newkey1 should not exist but did. '
-//		);
-//		
-//		$this->assertTrue(
-//			$this->object->renameKeyNx( 'newkey1' )
-//		);
-//		
-//	}
-//	
-//	public function testRenameKeyNxToExistingKey()
-//	{
-//		$this->setupObject();
-//		$this->getRedis()->set($this->testKey, 'value');
-//		$this->getRedis()->set('newkey1', 'value2');
-//		
-//		$this->assertFalse(
-//			$this->object->renameKeyNx( 'newkey1' )
-//		);
-//		
-//		$this->getRedis()->delete('newkey1');
-//	}
+	public function testRenameKeyNxOnEmptyKey()
+	{
+		$this->setupObject();
+		$this->assertFalse(
+			$this->object->renameKeyNx( 'asdf' )
+		);
+	}
+
+	public function testRenameKeyNxToNxKey()
+	{
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'value');
+		$this->getRedis()->delete('newkey1');
+		
+		$this->assertFalse(
+			$this->getRedis()->exists('newkey1'),
+			'newkey1 should not exist but did. '
+		);
+		
+		$this->assertTrue(
+			$this->object->renameKeyNx( 'newkey1' )
+		);
+		
+	}
+	
+	public function testRenameKeyNxToExistingKey()
+	{
+		$this->setupObject();
+		$this->getRedis()->set($this->testKey, 'value');
+		$this->getRedis()->set('newkey1', 'value2');
+		
+		$this->assertFalse(
+			$this->object->renameKeyNx( 'newkey1' )
+		);
+		
+		$this->getRedis()->delete('newkey1');
+	}
 
 	public function testGetTypeOnEmptyKey()
 	{
 		$this->setupObject();
-		$this->assertEquals(\Redis::REDIS_NOT_FOUND,
+		$this->assertEquals(\Redis::REDIS_STRING,
 			$this->object->getType()
 		);
 	}

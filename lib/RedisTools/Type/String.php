@@ -1,6 +1,6 @@
 <?php
 /**
- * manages the functionality of simple Redis string types
+ * Manages the functionality of simple Redis string types.
  * 
  * @author Thomas Profelt <office@protom.eu>
  * @since 24.03.2011
