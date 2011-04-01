@@ -7,6 +7,12 @@
  */
 class RedisTools
 {
+	
+	const BEFORE = \Redis::BEFORE;
+	
+	const AFTER = \Redis::AFTER;
+	
+	
 	/**
 	 * the default Redis instance
 	 * 

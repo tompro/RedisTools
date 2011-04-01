@@ -204,7 +204,18 @@ class ArrayListTest extends \PHPUnit_Framework_TestCase
 	
 	public function testPopValue()
 	{
-		$this->fail('no tests');
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertEquals('b', 
+			$this->object->pop()
+		);
+		$this->assertEquals('a', 
+			$this->object->pop()
+		);
+		$this->assertFalse(
+			$this->object->pop()
+		);
 	}
 	
 	public function testShiftValueOfEmptyKey()
@@ -216,9 +227,291 @@ class ArrayListTest extends \PHPUnit_Framework_TestCase
 	
 	public function testShiftValue()
 	{
-		$this->fail('no tests');
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertEquals('a', 
+			$this->object->shift()
+		);
+		$this->assertEquals('b', 
+			$this->object->shift()
+		);
+		$this->assertFalse(
+			$this->object->shift()
+		);
 	}
-
+	
+	public function testTrimEmptyList()
+	{
+		$this->assertTrue(
+			$this->object->trim(0)
+		);
+	}
+	
+	public function testTrimListToCompleteAndToLongLength()
+	{
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertTrue(
+			$this->object->trim(0)
+		);
+		
+		$this->assertEquals('b',
+			$this->object->pop()
+		);
+		
+		$this->assertEquals('a',
+			$this->object->pop()
+		);
+		
+		$this->assertFalse(
+			$this->object->pop()
+		);
+		
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertTrue(
+			$this->object->trim(0, 10)
+		);
+	}
+	
+	public function testTrimList()
+	{
+		$this->object->push('a');
+		$this->object->push('b');
+		$this->object->push('c');
+		
+		$this->assertTrue(
+			$this->object->trim(1)
+		);
+		
+		$this->assertEquals('b',
+			$this->object->shift()
+		);
+		
+		$this->object->push('a', true);
+		
+		$this->assertTrue(
+			$this->object->trim(0, 1)
+		);
+		
+		$this->assertEquals('c',
+			$this->object->pop()
+		);
+	}
+	
+	public function testCountOnEmptyKey()
+	{
+		$this->assertEquals(0,
+			$this->object->count()
+		);
+	}
+	
+	public function testCount()
+	{
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertEquals(2,
+			$this->object->count()
+		);
+		
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertEquals(4,
+			$this->object->count()
+		);
+		
+		$this->assertEquals(4,
+			count($this->object)
+		);
+	}
+	
+	public function testIteratorInterface()
+	{
+		$elements = array('a', 'b', 'c');
+		
+		$this->object->push('a');
+		$this->object->push('b');
+		$this->object->push('c');
+		
+		$index = 0;
+		
+		foreach ($this->object as $key => $value)
+		{
+			$this->assertEquals($index, $key);
+			$this->assertEquals($elements[$index], $value);
+			$index++;
+		}
+		
+	}
+	
+	public function testInserBeforeValueOnEmptyList()
+	{
+		$this->assertEquals(0,
+			$this->object->insertBeforeValue( 'b', 'a' )
+		);
+	}
+	
+	public function testInserAfterValueOnEmptyList()
+	{
+		$this->assertEquals(0,
+			$this->object->insertAfterValue( 'a', 'b' )
+		);
+	}
+	
+	public function testInsertBeforeValueValueNotExisting()
+	{
+		$this->object->push('b');
+		$this->assertEquals(-1,
+			$this->object->insertBeforeValue( 'd', 'c' )
+		);
+		$this->assertEquals(1, count($this->object));
+	}
+	
+	public function testInsertAfterValueValueNotExisting()
+	{
+		$this->object->push('a');
+		$this->assertEquals(-1,
+			$this->object->insertAfterValue( 'c', 'd' )
+		);
+		$this->assertEquals(1, count($this->object));
+	}
+	
+	public function testInsertBeforeValue()
+	{
+		$this->object->push('b');
+		$this->assertEquals(2,
+			$this->object->insertBeforeValue( 'b', 'a')
+		);
+		$this->assertEquals('a',
+			$this->object->getValueAt(0)
+		);
+	}
+	
+	public function testInsertAfterValue()
+	{
+		$this->object->push('a');
+		$this->assertEquals(2,
+			$this->object->insertAfterValue( 'a', 'b')
+		);
+		$this->assertEquals('b',
+			$this->object->getValueAt(1)
+		);
+	}
+	
+	public function testInsertBeforeValueWithMultipleValues()
+	{
+		$this->object->push('b');
+		$this->object->push('b');
+		$this->object->push('b');
+		
+		$this->assertEquals(4,
+			$this->object->insertBeforeValue( 'b', 'a')
+		);
+		$this->assertEquals('a',
+			$this->object->getValueAt(0)
+		);
+	}
+	
+	public function testInsertAfterValueWithMultipleValues()
+	{
+		$this->object->push('a');
+		$this->object->push('a');
+		$this->object->push('a');
+		
+		$this->assertEquals(4,
+			$this->object->insertAfterValue( 'a', 'b')
+		);
+		$this->assertEquals('b',
+			$this->object->getValueAt(1)
+		);
+	}
+	
+	public function testSliceOnEmptyKey()
+	{
+		$result = $this->object->slice(0);
+		$this->assertType('array', $result);
+		$this->assertEquals(0, count($result));
+	}
+	
+	public function testSlice()
+	{
+		$this->object->push('a');
+		$this->object->push('b');
+		$this->object->push('c');
+		
+		$result = $this->object->slice(0);
+		$this->assertType('array', $result);
+		$this->assertEquals(3, count($result));
+		
+		$result = $this->object->slice(0, 1);
+		$this->assertType('array', $result);
+		$this->assertEquals(2, count($result));
+		$this->assertEquals('a', $result[0]);
+		
+		$result = $this->object->slice(1);
+		$this->assertType('array', $result);
+		$this->assertEquals(2, count($result));
+		$this->assertEquals('b', $result[0]);
+		
+		$result = $this->object->slice(2, 10);
+		$this->assertType('array', $result);
+		$this->assertEquals(1, count($result));
+		$this->assertEquals('c', $result[0]);
+	}
+	
+	public function testRemoveValuesOnEmptyKey()
+	{
+		$this->assertEquals(0,
+			$this->object->removeValues('a')
+		);
+	}
+	
+	public function testRemoveValuesNoValue()
+	{
+		$this->object->push('b');
+		
+		$this->assertEquals(0,
+			$this->object->removeValues('a')
+		);
+	}
+	
+	public function testRemoveValuesOne()
+	{
+		$this->object->push('a');
+		$this->object->push('a');
+		$this->object->push('b');
+		
+		$this->assertEquals(1,
+			$this->object->removeValues('a', 1)
+		);
+		
+		$this->assertEquals('a',
+			$this->object->getValueAt(0)
+		);
+	}
+	
+	public function testRemoveValuesAll()
+	{
+		$this->object->push('a');
+		$this->object->push('a');
+		$this->object->push('b');
+		$this->object->push('a');
+		$this->object->push('a');
+		
+		$this->assertEquals(4,
+			$this->object->removeValues('a')
+		);
+		
+		$this->assertEquals('b',
+			$this->object->getValueAt(0)
+		);
+	}
+	
 }
 
 ?>

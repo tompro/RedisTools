@@ -8,8 +8,28 @@
 namespace RedisTools\Type;
 
 class ArrayList extends \RedisTools\Core\Dataconstruct
+	implements \Countable, \Iterator
 {
+	/**
+	 * key for internal iterator
+	 * @var int
+	 */
+	protected $index = 0;
 	
+	/**
+	 * Adds a value to this ArrayList.
+	 * 
+	 * Per default the value is inserted at the end of the list (position at length).
+	 * If $toHead is set to true the value is inserted as the first element of the
+	 * List. Per default if the list does not already exist it is created on push.
+	 * Setting $createNonExisting to false prevents this behaviour and only pushes
+	 * elements to the list if it already exists.
+	 * 
+	 * @param string $value
+	 * @param boolean $toHead - wether to push to the top of the list
+	 * @param boolean $createNonExisting - wether to create the list if not already existing
+	 * @return int - the new length of list or, false on error 
+	 */
 	public function push( $value, $toHead = false, $createNonExisting = true )
 	{
 		if($createNonExisting)
@@ -28,17 +48,49 @@ class ArrayList extends \RedisTools\Core\Dataconstruct
 		return $this->getRedis()->rPushx( $this->getKey(), $value );
 	}
 	
+	/**
+	 * returns and removes the last element of the ArrayList
+	 * 
+	 * @return string - false if ArrayList is empty
+	 */
 	public function pop()
 	{
 		return $this->getRedis()->rPop($this->getKey());
 	}
 	
+	/**
+	 * returns and removes the first element of the ArrayList
+	 * 
+	 * @return string - false if ArrayList is empty
+	 */
 	public function shift()
 	{
 		return $this->getRedis()->lPop($this->getKey());
 	}
+	
+	/**
+	 * returns a part of this ArrayList as an array.
+	 * Result starting at $startIndex (inclusive)
+	 * and ending with $endIndex (inclusive). Returns element to end of list
+	 * if end index is higher than the length of the list.
+	 * 
+	 * @param int $startIndex
+	 * @param int $endIndex
+	 * @return array 
+	 */
+	public function slice( $startIndex, $endIndex = -1 )
+	{
+		return $this->getRedis()->lRange(
+			$this->getKey(), $startIndex, $endIndex
+		);
+	}
 
-
+	/**
+	 * returns the value stored at position $index
+	 * 
+	 * @param int $index
+	 * @return string - false if $index is empty 
+	 */
 	public function getValueAt( $index )
 	{
 		return $this->getRedis()->lGet( $this->getKey(), $index );
@@ -57,116 +109,72 @@ class ArrayList extends \RedisTools\Core\Dataconstruct
 	}
 	
 	/**
-	 * Adds the string value to the head (left) of the list. 
-	 * Creates the list if the key didn't exist. 
-	 * If the key exists and is not a list, false is returned.
+	 * inserts a new $value before the first occurence of an existing $listValue.
 	 * 
-	 * @param string $key
+	 * Does not insert a value if the list does not exist or the $listValue is
+	 * not already present.
+	 * 
+	 * @param string $listValue
 	 * @param string $value
-	 * @return int | boolean false - new length of list or false on error 
+	 * @return int - the number of elements now in the list, -1 $listValue not present, 0 error eg list not existing
 	 */
-	//public function lPush( $key, $value ){}
+	public function insertBeforeValue( $listValue, $value )
+	{
+		return $this->getRedis()->lInsert($this->getKey(), 
+			\RedisTools::BEFORE, 
+			$listValue, 
+			$value
+		);
+	}
 	
 	/**
-	 * Adds the string value to the end (right) of the list. 
-	 * Creates the list if the key didn't exist. 
-	 * If the key exists and is not a list, false is returned.
+	 * inserts a new $value after the first occurence of an existing $listValue.
 	 * 
-	 * @param string $key
+	 * Does not insert a value if the list does not exist or the $listValue is
+	 * not already present.
+	 * 
+	 * @param string $listValue
 	 * @param string $value
-	 * @return int | boolean false - new length of list or false on error 
+	 * @return int - the number of elements now in the list, -1 $listValue not present, 0 error eg list not existing
 	 */
-	//public function rPush( $key, $value ){}
+	public function insertAfterValue( $listValue, $value )
+	{
+		return $this->getRedis()->lInsert($this->getKey(), 
+			\RedisTools::AFTER, 
+			$listValue, 
+			$value
+		);
+	}
 	
 	/**
-	 * Adds the string value to the head (left) of the list only if the list already exists. 
+	 * trims all values of the list wich indexes are not contained within the
+	 * range between (inclusive) $startIndex and $endIndex
 	 * 
-	 * @param string $key
+	 * @param int $startIndex
+	 * @param int $endIndex
+	 * @return boolean - success 
+	 */
+	public function trim( $startIndex, $endIndex = -1 )
+	{
+		return $this->getRedis()->lTrim( $this->getKey(),
+			$startIndex, $endIndex 
+		);
+	}
+	
+	/**
+	 * remove the first $count entries with value $value from this ArrayList.
+	 * 
+	 * Removes all entries with value $value if count = 0. Starts from the
+	 * end of the list if $count is negative
+	 * 
 	 * @param string $value
-	 * @return int | boolean false - new length of list or false on error 
+	 * @param int $count
+	 * @return int - number of items remove, false on error 
 	 */
-	//public function lPushx( $key, $value ){}
-	
-	/**
-	 * Adds the string value to the end (right) of the list only if the list already exists. 
-	 * 
-	 * @param string $key
-	 * @param string $value
-	 * @return int | boolean false - new length of list or false on error 
-	 */
-	//public function rPushx( $key, $value ){}
-	
-	/**
-	 * returns and removes the first element of the list
-	 * 
-	 * @param string $key
-	 * @return string 
-	 */
-	//public function lPop( $key ){}
-	
-	/**
-	 * returns and removes the last element of the list
-	 * 
-	 * @param string $key
-	 * @return string
-	 */
-	//public function rPop( $key ){}
-	
-	/**
-	 * If at least one of the lists $keys contains at least one element, 
-	 * the element will be popped from the head of the list and returned. 
-	 * Il all the list identified by the keys passed in arguments are empty, 
-	 * blPop will block during the specified timeout until an element is 
-	 * pushed to one of those lists. This element will be popped.
-	 * 
-	 * Example: blPop(array('list1', 'list2'), 10){}
-	 * 
-	 * @param type $keys - array of keys identifying a list
-	 * @param type $timeout - seconds to wait for an element
-	 * @return array - array('listname', 'elementvalue'){} 
-	 */
-	//public function blPop( $keys, $timeout ){}
-	
-	/**
-	 * If at least one of the lists $keys contains at least one element, 
-	 * the element will be popped from the end of the list and returned. 
-	 * Il all the list identified by the keys passed in arguments are empty, 
-	 * brPop will block during the specified timeout until an element is 
-	 * pushed to one of those lists. This element will be popped.
-	 * 
-	 * Example: brPop(array('list1', 'list2'), 10){}
-	 * 
-	 * @param type $keys - array of keys identifying a list
-	 * @param type $timeout - seconds to wait for an element
-	 * @return array - array('listname', 'elementvalue'){} 
-	 */
-	//public function brPop( $keys, $timeout ){}
-	
-	
-	
-	/**
-	 * Returns the specified elements of the list stored at the specified key 
-	 * in the range from $start to $end. start and stop are interpretated as indices: 
-	 *  0 the first element
-	 *  1 the second ... 
-	 * -1 the last element
-	 * 
-	 * @param string $key
-	 * @param int $start
-	 * @param int $end
-	 * @return array - the values 
-	 */
-	//public function lRange( $key, $start, $end ){}
-	
-	/**
-	 * trims an existing list so that it will contain only a specified range of elements
-	 * 
-	 * @param string $key
-	 * @param int $start
-	 * @param int $end
-	 * @return boolean success false if $key is no list 
-	 */
-	//public function lTrim( $key, $start, $end ){}
+	public function removeValues( $value, $count = 0 )
+	{
+		return $this->getRedis()->lRem( $this->getKey(), $value, $count );
+	}
 	
 	/**
 	 * Removes the first count occurences of the value element from the list. 
@@ -179,17 +187,62 @@ class ArrayList extends \RedisTools\Core\Dataconstruct
 	 * @return int | boolean false - the number of elements removed or false if key is no list
 	 */
 	//public function lRem( $key, $vaule, $count ){}
+
+
+	/**
+	 * returns the number of elements in this ArrayList
+	 * 
+	 * @return int
+	 */
+	public function count()
+	{
+		return $this->getRedis()->lLen($this->getKey());
+	}
 	
 	/**
-	 * Insert value in the list before or after the $pivot value. 
-	 * The parameter options specify the position of the insert (before or after). 
-	 * If the list didn't exists, or the pivot didn't exist, the value is not inserted (returns -1).
+	 * get current iterator value
 	 * 
-	 * @param string $key
-	 * @param int $position - TH_Redis::BEFORE | TH_Redis::AFTER
-	 * @param string $pivot - Value after which the new value should be inserted
-	 * @param string $value - The value to be inserted
-	 * @return int the number of elements now in the list, -1 if pivot not exists, 0 if not inserted 
+	 * @return string
 	 */
-	//public function lInsert( $key, $position, $pivot, $value ){}
+	public function current()
+	{
+		return $this->getValueAt( $this->index );
+	}
+
+	/**
+	 * get curent iterator key
+	 * 
+	 * @return int
+	 */
+	public function key()
+	{
+		return $this->index;
+	}
+
+	/**
+	 * increment iterator index
+	 */
+	public function next()
+	{
+		$this->index++;
+	}
+
+	/**
+	 * resets iterator index
+	 */
+	public function rewind()
+	{
+		$this->index = 0;
+	}
+
+	/**
+	 * determine wether iterator will get a next element
+	 * 
+	 * @return boolean
+	 */
+	public function valid()
+	{
+		return $this->getValueAt($this->index) !== false;
+	}
+	
 }
