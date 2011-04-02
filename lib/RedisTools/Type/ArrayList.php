@@ -155,7 +155,9 @@ class ArrayList extends \RedisTools\Core\Dataconstruct
 	 * 
 	 * @param string $listValue
 	 * @param string $value
-	 * @return int - the number of elements now in the list, -1 $listValue not present, 0 error eg list not existing
+	 * @return int - the number of elements now in the list, 
+	 *			     -1: $listValue not present
+	 *				  0: error eg.: list not existing
 	 */
 	public function insertAfterValue( $listValue, $value )
 	{
