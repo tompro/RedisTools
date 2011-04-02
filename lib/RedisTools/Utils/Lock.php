@@ -56,8 +56,7 @@ class Lock extends \RedisTools\Core\Dataconstruct
 	 */
 	public function releaseLock()
 	{
-		$this->delete();
-		return true;
+		return $this->delete();
 	}
 	
 }
