@@ -89,10 +89,10 @@ class Hash extends \RedisTools\Core\Dataconstruct
 	}
 	
 	/**
-	 * deletes an e
+	 * deletes the value at position $key
 	 * 
-	 * @param type $key
-	 * @return type 
+	 * @param string $key
+	 * @return boolean - success 
 	 */
 	public function deleteKey( $key )
 	{
