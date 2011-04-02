@@ -223,19 +223,13 @@ class Dataconstruct
 		throw new \RedisTools\Exception( $message );
 	}
 	
-	/****************************
+	/**
+	 * renames the key of this dataconstruct only if the target key does not
+	 * already exist.
 	 * 
-	 *  TODO: implement methods:
-	 * 
-	 * **************************
-	 * 
-	 * - renameNx
-	 *
-	 * to be implemented later when 
-	 * phpredis returns valid result
-	 * 
+	 * @param string $newKey
+	 * @return boolean - success
 	 */
-	
 	public function renameKeyNx( $newKey )
 	{
 		$result = $this->getRedis()->renameNx( $this->getKey(), $newKey );
