@@ -31,6 +31,9 @@ class RedisTools
 	
 	const AFTER = \Redis::AFTER;
 	
+	const ASC = 0;
+	
+	const DESC = 1;
 	
 	/**
 	 * the default Redis instance
