@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class String</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class String</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Manages the functionality of simple Redis string types.</p>
+<p class="description"><p>Copyright (c) 2011 Thomas Profelt</p><p>Permission is hereby granted, free of charge, to any person obtaining a copy  of this software and associated documentation files (the &quot;Software&quot;), to deal  in the Software without restriction, including without limitation the rights  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell  copies of the Software, and to permit persons to whom the Software is  furnished to do so, subject to the following conditions:</p><p>The above copyright notice and this permission notice shall be included in  all copies or substantial portions of the Software.</p><p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN  THE SOFTWARE.</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Thomas Profelt &lt;<a href="mailto:office@protom.eu">office@protom.eu</a>&gt;</li>
+				<li><span class="field">version:</span> 1.0</li>
+				<li><span class="field">since:</span> 24.03.2011</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_lib---RedisTools---Type---String.php.html">/lib/RedisTools/Type/String.php</a> (line <span class="field">31</span>)
+		</p>
+		
+				
+		<pre>\
+   |
+   --String</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																				
+												<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#append" title="details" class="method-name">append</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$string</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#getLength" title="details" class="method-name">getLength</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getSetValue" title="details" class="method-name">getSetValue</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getSubstring" title="details" class="method-name">getSubstring</a>
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$startIndex</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$endIndex</span> = <span class="var-default">-1</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getValue" title="details" class="method-name">getValue</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#setSubsting" title="details" class="method-name">setSubsting</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$string</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$startIndex</span> = <span class="var-default">0</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$endIndex</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#setValue" title="details" class="method-name">setValue</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$ttl</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#setValueIfNotExists" title="details" class="method-name">setValueIfNotExists</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="methodappend" id="append"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">append</span> (line <span class="line-number">113</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">appends a string to the string currently saved in key</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> - the length of the new string in bytes</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			append
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$string</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$string</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetLength" id="getLength"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getLength</span> (line <span class="line-number">102</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns the length of the keys content in bytes</p>
+<p class="description"><p>ATTENTION:  Keep in mind that string operations are byte base,  so operations on utf-8 string will not deliver the expected  characters.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> - false if key is of wrong type</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			getLength
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetSetValue" id="getSetValue"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSetValue</span> (line <span class="line-number">75</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">set a new value to this key and returns the old value</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> - false if key is empty</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getSetValue
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetSubstring" id="getSubstring"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSubstring</span> (line <span class="line-number">134</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns a part of the string stored at key.</p>
+<p class="description"><p>Substrings start at $startIndex (zero based) and ends with  $endIndex (defaults to end of string). Empty keys return  an empty string.</p><p>ATTENTION:  Keep in mind that string operations are byte base,  so operations on utf-8 string will not deliver the expected  characters.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getSubstring
+		</span>
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$startIndex</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$endIndex</span> = <span class="var-default">-1</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$startIndex</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$endIndex</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetValue" id="getValue"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getValue</span> (line <span class="line-number">64</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">returns the string value stored in a key</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> | boolean false if key does not exists</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getValue
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetSubsting" id="setSubsting"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setSubsting</span> (line <span class="line-number">156</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets a part of the string stored at key.</p>
+<p class="description"><p>Substring starts at $startIndex (default to first position)  and ends at the length of $string. Empty keys are set to the  substring. Every offset given in start string and not already  filled with characters is filled with null values.</p><p>ATTENTION:  Keep in mind that string operations are byte base,  so operations on utf-8 string will not deliver the expected  characters.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> - the new length of the string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			setSubsting
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$string</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$startIndex</span> = <span class="var-default">0</span>], <span class="var-type">int</span>&nbsp;<span class="var-name">$endIndex</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$startIndex</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$endIndex</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$string</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetValue" id="setValue"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setValue</span> (line <span class="line-number">42</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">set a simple string $value into this Key  the optional $ttl lets this Key expire after  $ttl seconds</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> - success of operation</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			setValue
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$ttl</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$ttl</span><span class="var-description">: - the time to live in seconds</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetValueIfNotExists" id="setValueIfNotExists"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setValueIfNotExists</span> (line <span class="line-number">86</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">sets a new $value to the key if the key does not exist</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> - success</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			setValueIfNotExists
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 02 Apr 2011 21:05:00 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>
