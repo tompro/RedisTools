@@ -21,41 +21,91 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  * 
- * @package Protom_
  * @author Thomas Profelt <office@protom.eu>
  * @since 01.04.2011
  */
-class Queue
+namespace RedisTools\Utils;
+use \RedisTools\Type as Type;
+use \RedisTools\Core as Core;
+
+class Queue extends Core\Key
 {
+	/**
+	 * the list to be used for this queue
+	 * 
+	 * @var \RedisTools\Type\ArrayList
+	 */
+	private $arrayList;
 	
 	/**
-	 * If at least one of the lists $keys contains at least one element, 
-	 * the element will be popped from the head of the list and returned. 
-	 * Il all the list identified by the keys passed in arguments are empty, 
-	 * blPop will block during the specified timeout until an element is 
-	 * pushed to one of those lists. This element will be popped.
-	 * 
-	 * Example: blPop(array('list1', 'list2'), 10){}
-	 * 
-	 * @param type $keys - array of keys identifying a list
-	 * @param type $timeout - seconds to wait for an element
-	 * @return array - array('listname', 'elementvalue'){} 
+	 * @return Type\ArrayList
 	 */
-	//public function blPop( $keys, $timeout ){}
+	public function getArrayList()
+	{
+		if($this->arrayList === null)
+		{
+			$this->arrayList = new Type\ArrayList( $this->getKey() );
+		}
+		return $this->arrayList;
+	}
 	
 	/**
-	 * If at least one of the lists $keys contains at least one element, 
-	 * the element will be popped from the end of the list and returned. 
-	 * Il all the list identified by the keys passed in arguments are empty, 
-	 * brPop will block during the specified timeout until an element is 
-	 * pushed to one of those lists. This element will be popped.
-	 * 
-	 * Example: brPop(array('list1', 'list2'), 10){}
-	 * 
-	 * @param type $keys - array of keys identifying a list
-	 * @param type $timeout - seconds to wait for an element
-	 * @return array - array('listname', 'elementvalue'){} 
+	 * @param Type\ArrayList $arrayList 
 	 */
-	//public function brPop( $keys, $timeout ){}
+	public function setArrayList( Type\ArrayList $arrayList )
+	{
+		$this->arrayList = $arrayList;
+	}
+
+	/**
+	 * adds a message string/object/array to this Queue
+	 * 
+	 * @param mixed $message
+	 * @return int - number of messages in this Queue 
+	 */
+	public function addMessage( $message )
+	{
+		if($message === null){
+			$this->throwException(
+				'Invalid argument. Queue message can not be null.'
+			);}
+		
+		return $this->getArrayList()->push( 
+			$this->serializeMessage( $message )
+		);
+	}
 	
+	/**
+	 * fetches and removes a message from this Queue
+	 * 
+	 * @return mixed - string or StdObject 
+	 */
+	public function fetchMessage()
+	{
+		return $this->unserializeMessage( 
+			$this->getArrayList()->shift() 
+		);
+	}
+	
+	/**
+	 * serializes a message to string
+	 * 
+	 * @param string $message
+	 * @return mixed
+	 */
+	protected function serializeMessage( $message )
+	{
+		return json_encode( $message );
+	}
+	
+	/**
+	 * deserializes a message to an object
+	 * 
+	 * @param string $message
+	 * @return mixed
+	 */
+	protected function unserializeMessage( $message )
+	{
+		return json_decode( $message );
+	}
 }

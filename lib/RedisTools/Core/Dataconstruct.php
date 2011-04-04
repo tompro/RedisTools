@@ -27,7 +27,7 @@
  */
 namespace RedisTools\Core;
 
-class Dataconstruct
+class Dataconstruct extends Key
 {
 
 	/**
@@ -36,40 +36,15 @@ class Dataconstruct
 	protected $redis;
 
 	/**
-	 * @var string
-	 */
-	protected $key;
-
-	/**
 	 * @param string $key
 	 * @param mixed $redis - the connected redis instance
 	 */
 	public function __construct( $key = null, $redis = null )
 	{
-		$this->setKey( $key );
+		parent::__construct($key);
 		$this->setRedis( $redis );
 	}
 
-	/**
-	 * returns the key to identify a redis data construct
-	 * 
-	 * @param string $key 
-	 */
-	public function getKey()
-	{
-		return $this->validateKey($this->key);
-	}
-
-	/**
-	 * sets the key that identifys a redis data construct
-	 * 
-	 * @param string $key 
-	 */
-	public function setKey( $key )
-	{
-		$this->key = $key;
-	}
-	
 	/**
 	 * returns the currently configured Redis instance
 	 * 
@@ -194,33 +169,6 @@ class Dataconstruct
 	public function moveToDb( $db )
 	{
 		return $this->getRedis()->move($this->getKey(), 1);
-	}
-
-	/**
-	 * validates a given key
-	 * 
-	 * @param string $key
-	 * @return string
-	 */
-	protected function validateKey( $key )
-	{
-		if ( ! is_string($key) ) 
-		{ $this->throwException('Redis key must be a string!'); }
-		
-        if (!preg_match('~^[a-zA-Z0-9_]+$~D', $key)) 
-		{ $this->throwException('Redis key should only consist of a-z A-Z 0-9 _'); }
-		
-		return $key;
-	}
-	
-	/**
-	 * throw a RedisTools Exception with a message
-	 * 
-	 * @param string $message 
-	 */
-	protected function throwException( $message = 'An error occured in RedisTools' )
-	{
-		throw new \RedisTools\Exception( $message );
 	}
 	
 	/**

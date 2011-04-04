@@ -43,46 +43,6 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($redis, $object->getRedis());
 	}
 
-
-	/**
-	 * @expectedException RedisTools\Exception
-	 */
-	public function testGetKeyWithNullValue()
-	{
-		$this->object->getKey();
-	}
-	
-	/**
-	 * @expectedException RedisTools\Exception
-	 */
-	public function testGetKeyWithIntValue()
-	{
-		$this->object->setKey(1234);
-		$this->object->getKey();
-	}
-	
-	/**
-	 * @expectedException RedisTools\Exception
-	 */
-	public function testGetKeyWithInvalidStringValue()
-	{
-		$this->object->setKey('asdf ? asdf');
-		$this->object->getKey();
-	}
-
-
-	public function testGetKeyWithNumericStringValue()
-	{
-		$this->object->setKey('1234');
-		$this->assertEquals('1234', $this->object->getKey());
-	}
-
-	public function testSetKey()
-	{
-		$this->object->setKey('asdf');
-		$this->assertEquals('asdf', $this->object->getKey());
-	}
-
 	/**
 	 * @expectedException RedisTools\Exception
 	 */
