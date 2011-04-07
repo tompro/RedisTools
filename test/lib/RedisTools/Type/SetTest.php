@@ -14,11 +14,8 @@ class SetTest extends \PHPUnit_Framework_TestCase
 
 	protected $testKey = 'key';
 
-
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
+	protected $testSets = array();
+	
 	protected function setUp()
 	{
 		$redis = new \Redis();
@@ -27,179 +24,338 @@ class SetTest extends \PHPUnit_Framework_TestCase
 		$this->object = new Set($this->testKey, $redis);
 	}
 
-	
-	
-	
-	
-	
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
 	protected function tearDown()
 	{
 		$this->object->delete();
+		foreach($this->testSets as $set)
+		{
+			$set->delete();
+		}
+	}
+	
+	public function testAddValue()
+	{
+		$this->assertTrue(
+			$this->object->addValue( 'asdf' )
+		);
+		
+		$this->assertFalse(
+			$this->object->addValue( 'asdf' )
+		);
+		
+		$this->assertTrue(
+			$this->object->addValue( 'qwer' )
+		);
+	}
+	
+	public function testDeleteValueOnEmptyKey()
+	{
+		$this->assertFalse(
+			$this->object->deleteValue( 'asdf' )
+		);
+	}
+	
+	public function testDeleteValue()
+	{
+		$this->object->addValue('asdf');
+		
+		$this->assertFalse(
+			$this->object->deleteValue( 'qwer' )
+		);
+		
+		$this->assertTrue(
+			$this->object->deleteValue( 'asdf' )
+		);
+		
+		$this->assertFalse(
+			$this->object->deleteValue( 'asdf' )
+		);
+		
+	}
+	
+	public function testContainsOnEmptyKey()
+	{
+		$this->assertFalse(
+			$this->object->contains('asdf')
+		);
+	}
+	
+	public function testContains()
+	{
+		$this->assertFalse(
+			$this->object->contains('asdf')
+		);
+		
+		$this->object->addValue('asdf');
+		
+		$this->assertTrue(
+			$this->object->contains('asdf')
+		);
+		
+		$this->assertFalse(
+			$this->object->contains('qwer')
+		);
+		
+	}
+	
+	public function testMoveValueToSet()
+	{
+		$this->object->addValue('v1');
+		$this->object->addValue('v2');
+		$this->object->addValue('v3');
+		
+		$this->assertTrue(
+			$this->object->contains('v1')
+		);
+		
+		$redis = new \Redis();
+		$redis->pconnect('127.0.0.1');
+		
+		$redis->delete('testkey');
+		$set = new Set('testkey', $redis);
+		
+		$this->assertTrue(
+			$this->object->moveValueToSet('v1', $set )
+		);
+		
+		$this->assertTrue(
+			$set->contains('v1')
+		);
+		
+		$this->assertFalse(
+			$this->object->contains('v1')
+		);
+		
+		$this->assertFalse(
+			$this->object->moveValueToSet('v5', $set )
+		);
+		
+		$this->object->addValue('v1');
+		
+		$this->assertTrue(
+			$this->object->moveValueToSet('v1', $set )
+		);
+		
+		$this->assertFalse(
+			$this->object->contains('v1')
+		);
+		
+		$set->delete();
+	}
+	
+	public function testCountOnEmptyKey()
+	{
+		$this->assertEquals(0, 
+			$this->object->count()
+		);
+		
+	}
+	
+	public function testCount()
+	{
+		$this->object->addValue('asdf');
+		
+		$this->assertEquals(1, 
+			$this->object->count()
+		);
+		
+		$this->object->addValue('v1');
+		$this->object->addValue('v2');
+		$this->object->addValue('v3');
+		
+		$this->assertEquals(4, 
+			count($this->object)
+		);
 	}
 
+
+	public function testPopOnEmptyKey()
+	{
+		$this->assertFalse(
+			$this->object->pop()
+		);
+	}
+	
+	public function testPop()
+	{
+		$values = array(
+			'v1', 'v2', 'v3', 'v4'
+		);
+		
+		foreach($values as $value)
+		{
+			$this->object->addValue($value);
+		}
+		
+		$this->assertTrue(
+			in_array( $this->object->pop(), $values )
+		);
+		
+		$this->assertEquals(3, count($this->object));
+		
+		$this->assertTrue(
+			in_array( $this->object->pop(), $values )
+		);
+		
+		$this->assertEquals(2, count($this->object));
+
+		$this->assertTrue(
+			in_array( $this->object->pop(), $values )
+		);
+		
+		$this->assertEquals(1, count($this->object));
+
+	}
+	
+	public function testGetValuesOnEmptyKey()
+	{
+		$result = $this->object->getValues();
+		$this->assertType('array', $result);
+		
+		$this->assertEquals(0, count($result));
+	}
+	
+	public function testGetValues()
+	{
+		$values = array('v1', 'v2', 'v3');
+		foreach($values as $value)
+		{
+			$this->object->addValue($value);
+		}
+		
+		$result = $this->object->getValues();
+		$this->assertType('array', $result);
+		
+		foreach ($result as $value)
+		{
+			$this->assertTrue(
+				in_array( $value, $values)
+			);
+		}
+	}
+	
+	public function testGetDiffOnEmptyKeyWithNoSetsToCompare()
+	{
+		$result = $this->object->getDiff();
+		$this->assertType('array', $result);
+		$this->assertEquals(0, count($result));
+	}
+	
+	public function testGetDiffOnEmptyKeyAndStoreResultNoSetsToCompare()
+	{
+		$result = $this->object->getDiff(array(), true, 'testkey');
+		$this->assertType('\RedisTools\Type\Set', $result);
+		$this->assertEquals(0, count($result));
+		$result->delete();
+	}
+	
+	public function testGetDiffNoSetsToCompare()
+	{
+		$values = array('v1', 'v2');
+		$this->fillSetWithTestValues($this->object, $values);
+		
+		$result = $this->object->getDiff();
+		$this->assertType('array', $result);
+		$this->assertEquals(count($values), count($result));
+		
+		foreach($result as $value)
+		{
+			$this->assertTrue(in_array($value, $values));
+		}
+	}
+	
+	public function testGetDiffAndStoreResultNoSetsToCompare()
+	{
+		$values = array('v1', 'v2');
+		$this->fillSetWithTestValues($this->object, $values);
+		
+		$result = $this->object->getDiff(array(), true, 'testkey');
+		$this->assertType('\RedisTools\Type\Set', $result);
+		$this->assertEquals(count($values), count($result));
+		$result->delete();
+	}
+	
+	public function testGetDiffWithOneSetToCompare()
+	{
+		$values1 = array('v1', 'v2', 'v3', 'v5');
+		$values2 = array('v4', 'v2', 'v3');
+		
+		$this->fillSetWithTestValues($this->object, $values1);
+		$setCompare = $this->getTestSet('testkey1', $values2);
+		
+		$result = $this->object->getDiff( $setCompare );
+		$this->assertType('array', $result);
+		$this->assertContains('v1', $result);
+		$this->assertContains('v5', $result);
+		$this->assertNotContains('v2', $result);
+		$this->assertNotContains('v3', $result);
+		$this->assertNotContains('v4', $result);
+	}
+	
+	public function testGetDiffWithOneSetToCompareAndStoreResult()
+	{
+		$values1 = array('v1', 'v2', 'v3', 'v5');
+		$values2 = array('v4', 'v2', 'v3');
+		
+		$this->fillSetWithTestValues($this->object, $values1);
+		$setCompare = $this->getTestSet('testkey1', $values2);
+		
+		$result = $this->object->getDiff( array($setCompare), true, 'resultkey' );
+		$this->assertType('\RedisTools\Type\Set', $result);
+		$this->assertTrue($result->contains('v1'));
+		$this->assertTrue($result->contains('v5'));
+		
+		$this->assertFalse($result->contains('v2'));
+		$this->assertFalse($result->contains('v3'));
+		$this->assertFalse($result->contains('v4'));
+		
+		$result->delete();
+	}
+	
+	public function testGetDiffWithMultipleSetsToCompareAndStoreResult()
+	{
+		$values1 = array('v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8');
+		$values2 = array('v1', 'v2', 'v3');
+		$values3 = array('v5', 'v6', 'v7');
+		
+		$this->fillSetWithTestValues($this->object, $values1);
+		$setCompare = $this->getTestSet('testkey1', $values2);
+		$setCompare1 = $this->getTestSet('testkey2', $values3);
+		
+		$result = $this->object->getDiff( array($setCompare, $setCompare1), true, 'resultkey' );
+		$this->assertType('\RedisTools\Type\Set', $result);
+		$this->assertTrue($result->contains('v4'));
+		$this->assertTrue($result->contains('v8'));
+		
+		$this->assertFalse($result->contains('v2'));
+		$this->assertFalse($result->contains('v7'));
+		
+		$result->delete();
+	}
+
+	protected function fillSetWithTestValues( Set $set, $values = array() )
+	{
+		foreach($values as $value)
+		{
+			$set->addValue($value);
+		}
+	}
+	
+	protected function getTestSet( $key, $testValues = array() )
+	{
+		$set = new Set($key, $this->getRedis());
+		$this->fillSetWithTestValues($set, $testValues);
+		$this->testSets[]= $set;
+		return $set;
+	}
+	
+	protected function getRedis()
+	{
+		return $this->object->getRedis();
+	}
+	
+
 }
-/*
- * 
---------------------------------------------------------
-sAdd
---------------------------------------------------------
-
-*Description*
-Adds a value to the set value stored at key. If this value is already in the set, FALSE is returned.
-
-*Parameters*
-key value
-
-*Return value*
-BOOL TRUE if value didn't exist and was added successfully, FALSE if the value is already present.
-
-*Example*
-$redis->sAdd('key1' , 'set1');
-
- */
-
-/*
-
---------------------------------------------------------
-sRem, sRemove
---------------------------------------------------------
-
-*Description*
-Removes the specified member from the set value stored at key.
-
-*Parameters*
-key member
-
-*Return value*
-BOOL TRUE if the member was present in the set, FALSE if it didn't.
-
-*Example*
-$redis->sAdd('key1' , 'set1'); 
-$redis->sAdd('key1' , 'set2'); 
-$redis->sAdd('key1' , 'set3');  'key1' => {'set1', 'set2', 'set3'}
-$redis->sRem('key1', 'set2');  'key1' => {'set1', 'set3'}
-*/
-
-/*
---------------------------------------------------------
-sMove
---------------------------------------------------------
-
-*Description*
-Moves the specified member from the set at srcKey to the set at dstKey.
-
-*Parameters*
-srcKey dstKey member
-
-*Return value*
-BOOL If the operation is successful, return TRUE. If the srcKey and/or dstKey didn't exist, and/or the member didn't exist in srcKey, FALSE is returned.
-
-*Example*
-$redis->sAdd('key1' , 'set11'); 
-$redis->sAdd('key1' , 'set12'); 
-$redis->sAdd('key1' , 'set13');  'key1' => {'set11', 'set12', 'set13'}
-$redis->sAdd('key2' , 'set21'); 
-$redis->sAdd('key2' , 'set22');  'key2' => {'set21', 'set22'}
-$redis->sMove('key1', 'key2', 'set13');  'key1' =>  {'set11', 'set12'}
-                      'key2' =>  {'set21', 'set22', 'set13'}
-*/
-
-/*
---------------------------------------------------------
-sIsMember, sContains
---------------------------------------------------------
-*Description*
-Checks if value is a member of the set stored at the key key.
-
-*Parameters*
-key value
-
-*Return value*
-BOOL TRUE if value is a member of the set at key key, FALSE otherwise.
-
-*Example*
-$redis->sAdd('key1' , 'set1'); 
-$redis->sAdd('key1' , 'set2'); 
-$redis->sAdd('key1' , 'set3'); /* 'key1' => {'set1', 'set2', 'set3'}
-
-$redis->sIsMember('key1', 'set1'); /* TRUE
-$redis->sIsMember('key1', 'setX'); /* FALSE 
-
-*/
-
-/*
---------------------------------------------------------
-sCard, sSize
---------------------------------------------------------
-
-*Description*
-Returns the cardinality of the set identified by key.
-
-*Parameters*
-key
-
-*Return value*
-LONG the cardinality of the set identified by key, 0 if the set doesn't exist.
-
-*Example*
-$redis->sAdd('key1' , 'set1'); 
-$redis->sAdd('key1' , 'set2'); 
-$redis->sAdd('key1' , 'set3'); /* 'key1' => {'set1', 'set2', 'set3'}
-$redis->sCard('key1'); /* 3 
-$redis->sCard('keyX'); /* 0 
-*/
-
-/*
---------------------------------------------------------
-sPop
---------------------------------------------------------
-
-*Description*
-Removes and returns a random element from the set value at Key.
-
-*Parameters*
-key
-
-*Return value*
-String "popped" value
-Bool FALSE if set identified by key is empty or doesn't exist.
-
-*Example*
-$redis->sAdd('key1' , 'set1'); 
-$redis->sAdd('key1' , 'set2'); 
-$redis->sAdd('key1' , 'set3'); /* 'key1' => {'set3', 'set1', 'set2'}
-$redis->sPop('key1'); /* 'set1', 'key1' => {'set3', 'set2'}
-$redis->sPop('key1'); /* 'set3', 'key1' => {'set2'}
-
-*/
-
-/*
---------------------------------------------------------
-sRandMember
---------------------------------------------------------
-
-*Description*
-Returns a random element from the set value at Key, without removing it.
-
-*Parameters*
-key
-
-*Return value*
-String value from the set
-Bool FALSE if set identified by key is empty or doesn't exist.
-
-*Example*
-$redis->sAdd('key1' , 'set1'); 
-$redis->sAdd('key1' , 'set2'); 
-$redis->sAdd('key1' , 'set3'); /* 'key1' => {'set3', 'set1', 'set2'}
-$redis->sRandMember('key1'); /* 'set1', 'key1' => {'set3', 'set1', 'set2'}
-$redis->sRandMember('key1'); /* 'set3', 'key1' => {'set3', 'set1', 'set2'}
-
-*/
 
 /*
 --------------------------------------------------------
@@ -427,40 +583,4 @@ array(2) {
   string(1) "2"
 }
 
-*/
-
-/*
---------------------------------------------------------
-sMembers, sGetMembers
---------------------------------------------------------
-*Description*
-Returns the contents of a set.
-
-*Parameters*
-Key: key
-
-*Return value*
-An array of elements, the contents of the set.
-
-*Example*
-$redis->delete('s');
-$redis->sAdd('s', 'a');
-$redis->sAdd('s', 'b');
-$redis->sAdd('s', 'a');
-$redis->sAdd('s', 'c');
-var_dump($redis->sMembers('s'));
-Output:
-
-array(3) {
-  [0]=>
-  string(1) "c"
-  [1]=>
-  string(1) "a"
-  [2]=>
-  string(1) "b"
-}
-The order is random and corresponds to redis' own internal representation of the set structure. ## getSet ##### *Description* Sets a value and returns the previous entry at that key. ##### *Parameters* *Key*: key *STRING*: value ##### *Return value* A string, the previous value located at this key. ##### *Example*
-$redis->set('x', '42');
-$exValue = $redis->getSet('x', 'lol');  // return '42', replaces x by 'lol'
-$newValue = $redis->get('x')'       // return 'lol'
 */
