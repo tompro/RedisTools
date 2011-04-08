@@ -9,7 +9,9 @@ error_reporting(E_ALL);
 
 ini_set(
 	'include_path', 
-	ini_get('include_path').PATH_SEPARATOR.dirname(__FILE__).'/../lib/'
+	ini_get('include_path')
+	.PATH_SEPARATOR.dirname(__FILE__).'/../lib/'
+	.PATH_SEPARATOR.dirname(__FILE__).'/lib/'
 );
 
 function __autoload($className) 
