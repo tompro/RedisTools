@@ -27,9 +27,6 @@ class ReflectionTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($this->testDummy, $this->object->getObject());
 	}
 
-	/**
-	 * @todo Implement testSetObject().
-	 */
 	public function testSetObject()
 	{
 		$object = new \stdClass();
@@ -61,13 +58,14 @@ class ReflectionTest extends \PHPUnit_Framework_TestCase
 	
 	public function testGetRedisToolsPropertiesOnlyReturnsRedisToolsProperties()
 	{
-		
 		$properties = $this->object->getRedisToolsProperties();
 		foreach ($properties as $property)
 		{
+			$this->assertType('\RedisTools\Utils\Reflection\Property', $property);
 			$this->assertFalse( strstr( $property->getName(), 'No') );
+			$this->assertContains( 'Property', $property->getName() );
+			$this->assertGreaterThan(0, count($property->getOptions()));
 		}
-		var_dump($properties);
 	}
 	
 	

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Inflection
+ * Reflection
  * 
  * Copyright (c) 2011 Thomas Profelt
  * 
@@ -31,8 +31,17 @@ namespace RedisTools\Utils;
 
 class Reflection
 {
-	
+	/**
+	 * the object to be inspected
+	 * 
+	 * @var mixed
+	 */
 	protected $object;
+	
+	/**
+	 * @var String
+	 */
+	const REDIS_PROPERTY_PREFIX = '@RedisTools';
 	
 	/**
 	 * @var \ReflectionClass
@@ -52,7 +61,12 @@ class Reflection
 		}
 		return $this->reflector;
 	}
-		
+	
+	/**
+	 * returns the object to be inspected
+	 * 
+	 * @return mixed
+	 */
 	public function getObject()
 	{
 		if(is_object($this->object) )
@@ -64,17 +78,32 @@ class Reflection
 			'RedisTools reflection needs an object to be set before accessing inflection methods.'
 		);
 	}
-
+	
+	/**
+	 * set the object to be inspected
+	 * 
+	 * @param Object $object 
+	 */
 	public function setObject( $object )
 	{
 		$this->object = $object;
 	}
 	
+	/**
+	 * @param Object $object 
+	 */
 	public function __construct( $object = null )
 	{
 		$this->setObject($object);
 	}
 	
+	/**
+	 * returns all propertys of configured object
+	 * that have a @RedisProperty assigned as an array
+	 * of \RedisTools\Utils\Reflection\Property objects
+	 * 
+	 * @return Reflection\Property array
+	 */
 	public function getRedisToolsProperties()
 	{
 		return $this->filterRedisToolsProperties();
@@ -87,11 +116,14 @@ class Reflection
 		foreach($this->getReflector()->getProperties() as $property)
 		{
 			$doc = $property->getDocComment();
-			if(strstr($doc, 'RedisToolsDbField'))
+			if(strstr($doc, self::REDIS_PROPERTY_PREFIX))
 			{
-				$result[] = $property;
+				$redisProperty = new Reflection\Property(
+					$property->getName(), 
+					$property->getDocComment()
+				);
+				$result[] = $redisProperty;
 			}
-			
 		}
 		
 		return $result;

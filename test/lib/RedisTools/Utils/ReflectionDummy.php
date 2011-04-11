@@ -11,6 +11,19 @@ namespace RedisTools\Utils;
 class ReflectionDummy
 {
 	/**
+	 * asdfdsaf
+	 * 
+	 * this is a lot of annotations here to test differently messed
+	 * up doc block comment are parsed correctly
+	 * 
+	 * asdfsadf
+	 * @fake
+	 * @Redis
+	 * @RedisToolsSome Value
+	 * @RedisToolNo Value
+	 * @RedisToolsOther Other Value
+	 * 
+	 * @
 	 * @RedisToolsDbField String
 	 * @var String
 	 */
