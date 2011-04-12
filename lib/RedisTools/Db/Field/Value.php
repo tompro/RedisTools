@@ -1,6 +1,6 @@
 <?php
 /**
- * Object
+ * Represents a Db Object String field for simple key value storage
  * 
  * Copyright (c) 2011 Thomas Profelt
  * 
@@ -24,13 +24,12 @@
  * 
  * 
  * @author Thomas Profelt <office@protom.eu>
- * @since 08.04.2011
+ * @since 12.04.2011
  */
-namespace RedisTools\Db;
+namespace RedisTools\Db\Field;
+use RedisTools\Db;
 
-class Object
+class Value extends Db\Field
 {
-	
-	
 	
 }

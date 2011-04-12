@@ -50,6 +50,8 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(isset($options['No']));
 		$this->assertEquals('Value', $options['Some']);
 		$this->assertEquals('Other', $options['Other']);
+		$this->assertFalse(isset($options['']));
+		$this->assertFalse(isset($options['Asdf']));
 	}
 
 }

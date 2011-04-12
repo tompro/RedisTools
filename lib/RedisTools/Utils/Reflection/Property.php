@@ -142,5 +142,4 @@ class Property
 		$this->name = $name;
 	}
 
-
 }

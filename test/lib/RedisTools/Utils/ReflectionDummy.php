@@ -21,6 +21,9 @@ class ReflectionDummy
 	 * @Redis
 	 * @RedisToolsSome Value
 	 * @RedisToolNo Value
+	 * @RedisTools
+	 * @RedisTools   
+	 * @RedisToolsAsdf
 	 * @RedisToolsOther Other Value
 	 * 
 	 * @

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Reflection
  * 
@@ -105,11 +104,6 @@ class Reflection
 	 * @return Reflection\Property array
 	 */
 	public function getRedisToolsProperties()
-	{
-		return $this->filterRedisToolsProperties();
-	}
-	
-	protected function filterRedisToolsProperties()
 	{
 		$result = array();
 		
