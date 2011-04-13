@@ -33,13 +33,19 @@ use RedisTools\Utils;
 use RedisTools\Core;
 use RedisTools\Type;
 
-class ValueObject extends Core\Dataconstruct
+class ValueObject extends Core\Key
 {
 	/**
 	 * @var Utils\Reflection
 	 */
 	private $reflector;
 	
+	/**
+	 * @var Type\Hash
+	 */
+	private $hash;
+
+
 	/**
 	 * @return Utils\Reflection
 	 */
@@ -57,6 +63,23 @@ class ValueObject extends Core\Dataconstruct
 	}
 	
 	/**
+	 * @return Type\Hash
+	 */
+	public function getHash()
+	{
+		return $this->hash;
+	}
+	
+	/**
+	 * @param Type\Hash $hash 
+	 */
+	public function setHash( $hash )
+	{
+		$this->hash = $hash;
+	}
+
+		
+	/**
 	 * Constructs a RedisTools ValueObject that can define RedisTools properties
 	 * via annotated internal class properties.
 	 * 
@@ -70,4 +93,39 @@ class ValueObject extends Core\Dataconstruct
 		$this->setReflector($reflector);
 	}
 	
+	protected function load()
+	{
+		$values = $this->getHash()->getMulti( $this->getFields() );
+		$this->populateValues($values);
+	}
+	
+	protected function getFields()
+	{
+		$result = array();
+		foreach($this->getReflector()->getRedisToolsProperties() as $property)
+		{
+			$result[] = $property->getName();
+		}
+		return $result;
+	}
+	
+	protected function populateValues( $values )
+	{
+		foreach($values as $key => $value)
+		{
+			$this->$key = $value;
+		}
+	}
+
+	public function save()
+	{
+		$values = array();
+		foreach ($this->getReflector()->getRedisToolsProperties() as $property)
+		{
+			$name = $property->getName();
+			$values[$name] = $this->$name;
+		}
+		
+		$this->getHash()->setMulti($values);
+	}
 }

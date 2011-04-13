@@ -29,50 +29,6 @@ namespace RedisTools\Core;
 
 class Dataconstruct extends Key
 {
-
-	/**
-	 * @var \Redis
-	 */
-	protected $redis;
-
-	/**
-	 * @param string $key
-	 * @param mixed $redis - the connected redis instance
-	 */
-	public function __construct( $key = null, $redis = null )
-	{
-		parent::__construct($key);
-		$this->setRedis( $redis );
-	}
-
-	/**
-	 * returns the currently configured Redis instance
-	 * 
-	 * @return Redis
-	 */
-	public function getRedis()
-	{
-		If($this->redis !== null)
-		{
-			return $this->redis;
-		}
-		
-		throw new \RedisTools\Exception(
-			'No Redis instance provided!'
-		);
-	}
-
-	/**
-	 * the connected redis instance to be used
-	 * the instance has to implement all functions
-	 * that are provide by phpredis {@link https://github.com/nicolasff/phpredis}
-	 * 
-	 * @param mixed $redis 
-	 */
-	public function setRedis( $redis )
-	{
-		$this->redis = $redis;
-	}
 	
 	/**
 	 * deletes this dataconstruct from Redis
