@@ -66,9 +66,6 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($arrayList, $object->getArrayList());
 	}
 
-	/**
-	 * @todo Implement testAddItem().
-	 */
 	public function testAddMessageObject()
 	{
 		$message = new \stdClass();
