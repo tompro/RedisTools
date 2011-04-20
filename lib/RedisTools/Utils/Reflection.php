@@ -107,19 +107,28 @@ class Reflection
 	{
 		$result = array();
 		
+		/* @var $property \ReflectionProperty */
 		foreach($this->getReflector()->getProperties() as $property)
 		{
 			$doc = $property->getDocComment();
 			if(strstr($doc, self::REDIS_PROPERTY_PREFIX))
 			{
+				if( ! $property->isPrivate() )
+				{
+					$visibility = $property->isProtected() ? "protected" : "public";
+					throw new \RedisTools\Exception(
+						"Redis properties have to be private but property: " . $property->getName() .
+						" in class: " . $this->getReflector()->getName() . " is declared: " . $visibility
+					);
+				}
+				
 				$redisProperty = new Reflection\Property(
 					$property->getName(), 
 					$property->getDocComment()
 				);
-				$result[] = $redisProperty;
+				$result[$property->getName()] = $redisProperty;
 			}
 		}
-		
 		return $result;
 	}
 	

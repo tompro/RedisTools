@@ -35,6 +35,16 @@ use RedisTools\Type;
 
 class ValueObject extends Core\Key
 {
+	
+	/**
+	 * contains Redis Property descriptions for all
+	 * instances of RedisTools ValueObjects and decending
+	 * classes for reflection caching.
+	 * 
+	 * @var array
+	 */
+	private static $reflectionData = array();
+	
 	/**
 	 * @var Utils\Reflection
 	 */
@@ -51,6 +61,10 @@ class ValueObject extends Core\Key
 	 */
 	public function getReflector()
 	{
+		if($this->reflector === null)
+		{
+			$this->reflector = new Utils\Reflection($this);
+		}
 		return $this->reflector;
 	}
 	
@@ -60,6 +74,21 @@ class ValueObject extends Core\Key
 	public function setReflector( $reflector )
 	{
 		$this->reflector = $reflector;
+	}
+	
+	/**
+	 * returns the RedisTools properties of this class
+	 * 
+	 * @return array
+	 */
+	protected function getRedisToolsProperties()
+	{
+		$class = get_class($this);
+		if( ! isset(self::$reflectionData[$class]))
+		{
+			self::$reflectionData[$class] = $this->getReflector()->getRedisToolsProperties();
+		}
+		return self::$reflectionData[$class];
 	}
 	
 	/**
@@ -77,7 +106,6 @@ class ValueObject extends Core\Key
 	{
 		$this->hash = $hash;
 	}
-
 		
 	/**
 	 * Constructs a RedisTools ValueObject that can define RedisTools properties
@@ -91,6 +119,27 @@ class ValueObject extends Core\Key
 	{
 		parent::__construct($key, $redis);
 		$this->setReflector($reflector);
+	}
+	
+	/**
+	 * sets redis property values
+	 * 
+	 * @param string $name
+	 * @param mixed $value 
+	 */
+	public function __set( $name, $value )
+	{
+		
+	}
+	
+	/**
+	 * returns redis property values
+	 * 
+	 * @param String $name 
+	 */
+	public function __get( $name )
+	{
+		
 	}
 	
 	protected function load()
@@ -120,7 +169,7 @@ class ValueObject extends Core\Key
 	public function save()
 	{
 		$values = array();
-		foreach ($this->getReflector()->getRedisToolsProperties() as $property)
+		foreach ($this->getRedisToolsProperties() as $property)
 		{
 			$name = $property->getName();
 			$values[$name] = $this->$name;

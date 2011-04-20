@@ -36,13 +36,13 @@ class ReflectionDummy
 	 * @RedisToolsDbField String
 	 * @var String
 	 */
-	protected $protectedPropertyString;
+	private $protectedPropertyString;
 	
 	/**
 	 * @RedisToolsDbField String
 	 * @var String
 	 */
-	public $publicPropertyString;
+	private $publicPropertyString;
 	
 	/**
 	 * @var \RedisTools\Type\Set
