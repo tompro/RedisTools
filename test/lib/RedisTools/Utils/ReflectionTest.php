@@ -67,26 +67,7 @@ class ReflectionTest extends \PHPUnit_Framework_TestCase
 			$this->assertGreaterThan(0, count($property->getOptions()));
 		}
 	}
-	
-	/**
-	 * @expectedException \RedisTools\Exception
-	 */
-	public function testGetRedisToolsPropertiesDefinedAsProtectedProperty()
-	{
-		$object = new ReflectionDummyProtected();
-		$reflection = new Reflection($object);
-		$reflection->getRedisToolsProperties();
-	}
-	
-	/**
-	 * @expectedException \RedisTools\Exception
-	 */
-	public function testGetRedisToolsPropertiesDefinedAsPublicProperty()
-	{
-		$object = new ReflectionDummyPublic();
-		$reflection = new Reflection($object);
-		$reflection->getRedisToolsProperties();
-	}
+
 }
 
 ?>

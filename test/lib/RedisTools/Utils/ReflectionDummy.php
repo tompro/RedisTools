@@ -58,4 +58,27 @@ class ReflectionDummy
 	 * @var string
 	 */
 	public $publicNoRedisProperty;
+	
+	/**
+	 * @RedisToolsDbField
+	 * @var \RedisTools\Db\Field\SimpleValue
+	 */
+	private $redisSimpleValueProperty;
+	
+	/**
+	 * @RedisToolsDbField
+	 * @var \RedisTools\Db\Field\UniqueIdentifier
+	 */
+	private $redisUniqueIdentifierProperty;
+	
+	/**
+	 * @RedisToolsDbField
+	 */
+	protected $redisInvalidVarDbValueProperty;
+	
+	/**
+	 * @RedisToolsAsdf
+	 * @var int
+	 */
+	protected $redisInvalidRedisToolsDbFieldProperty;
 }

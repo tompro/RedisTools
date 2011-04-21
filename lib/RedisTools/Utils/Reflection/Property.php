@@ -27,6 +27,7 @@
  * @since 11.04.2011
  */
 namespace RedisTools\Utils\Reflection;
+use RedisTools\Utils;
 
 class Property
 {
@@ -109,16 +110,24 @@ class Property
 		$string =  trim(preg_replace('/\t *\*. */', ' ', $docHeader));
 		$lines = explode("\n", $string);
 		
-		$pattern = '/'.\RedisTools\Utils\Reflection::REDIS_PROPERTY_PREFIX.'/';
+		$pattern = '/@/';
 		$lines = preg_grep( $pattern, $lines );
 		foreach($lines as $line)
 		{
 			$elements = explode(' ', trim($line) );
-			if( isset($elements[0]) && isset($elements[1]) )
+			if( isset($elements[0]) )
 			{
-				$name = str_replace('@RedisTools', '', $elements[0]);
-				$value = trim($elements[1]);
-				$options[$name] = $value;
+				$name = str_replace(
+					'@' . Utils\Reflection::REDIS_PROPERTY_PREFIX, '', 
+					$elements[0]
+				);
+				
+				$name = str_replace('@', '', $name);
+				if(!empty ($name))
+				{
+					$value = (isset($elements[1])) ? trim($elements[1]) : '';
+					$options[$name] = $value;
+				}
 			}
 		}
 		
@@ -141,5 +150,48 @@ class Property
 	{
 		$this->name = $name;
 	}
+	
+	public function isDbField()
+	{
+		$options = $this->getOptions();
+		return isset($options['DbField']);
+	}
+	
+	/**
+	 * @return \RedisTools\Db\Field
+	 */
+	public function getDbFieldClass()
+	{
+		$options = $this->getOptions();
+		var_dump($options);
+		if( ! $this->isDbField() )
+		{
+			throw new \RedisTools\Exception(
+				"The RedisProperty {$this->getName()} is not declared as 
+				RedisToolsDbField. Define the doc comment property to use
+				this property as db field class."
+			);
+		}
+		
+		if( ! isset($options['var']) )
+		{
+			throw new \RedisTools\Exception(
+				"The RedisProperty {$this->getName()} has no 
+				valid Db field class defined. Provide a class by defining the @var
+				doc comment property with a \RedisTools\Db\Field type."
+			);
+		}
+		
+		$class = $options['var'];
+		if( strstr( $class, Utils\Reflection::REDIS_PROPERTY_PREFIX) !== false )
+		{
+			return new $class();
+		}
 
+		throw new \RedisTools\Exception(
+			"The RedisProperty {$this->getName()} has no 
+			valid Db field class defined. Provide a class by defining the @var
+			doc comment property with a \RedisTools\Db\Field type. Defined class: '$class'."
+		);
+	}
 }

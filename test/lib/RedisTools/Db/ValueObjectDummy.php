@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Represents a Db Object String field for simple key value storage
+ * ValueObjectDummy
  * 
  * Copyright (c) 2011 Thomas Profelt
  * 
@@ -24,12 +25,22 @@
  * 
  * 
  * @author Thomas Profelt <office@protom.eu>
- * @since 12.04.2011
+ * @since 21.04.2011
  */
-namespace RedisTools\Db\Field;
-use RedisTools\Db;
+namespace RedisTools\Db;
 
-class Value extends Db\Field
+class ValueObjectDummy extends ValueObject
 {
 	
+	/**
+	 * @RedisToolsDbField
+	 * @var RedisTools\Db\Field\SimpleValue
+	 */
+	public $simpleValue;
+	
+	/**
+	 * @RedisToolsDbField
+	 * @var RedisTools\Db\Field\UniqueIdentifier
+	 */
+	public $uniqueIdentifier;
 }

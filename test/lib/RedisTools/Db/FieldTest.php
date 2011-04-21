@@ -20,12 +20,6 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('name', $this->object->getName());
 	}
 
-	public function testSetName()
-	{
-		$this->object->setName('asdf');
-		$this->assertEquals('asdf', $this->object->getName());
-	}
-
 	public function testGetValue()
 	{
 		$this->assertEquals('value', $this->object->getValue());
