@@ -43,4 +43,6 @@ class ValueObjectDummy extends ValueObject
 	 * @var RedisTools\Db\Field\UniqueIdentifier
 	 */
 	public $uniqueIdentifier;
+	
+	protected $nonRedisProperty;
 }

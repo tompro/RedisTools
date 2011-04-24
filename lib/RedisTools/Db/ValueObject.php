@@ -50,6 +50,13 @@ class ValueObject extends Core\Key
 	private $reflector;
 
 	/**
+	 * Wether this object has been saved to Redis or not
+	 * 
+	 * @var boolean
+	 */
+	private $isPersistent = false;
+	
+	/**
 	 * @return Utils\Reflection
 	 */
 	public function getReflector()
@@ -82,18 +89,6 @@ class ValueObject extends Core\Key
 			self::$reflectionData[$class] = $this->getReflector()->getRedisToolsProperties();
 		}
 		return self::$reflectionData[$class];
-	}
-	
-	/**
-	 * Determine if a given name represents a RedisProperty in this class
-	 * 
-	 * @param string $name
-	 * @return boolean
-	 */
-	protected function isRedisDbFieldProperty( $name )
-	{
-		return ( property_exists( $this, $name) 
-			&& $this->$name instanceof Field);
 	}
 		
 	/**
@@ -132,27 +127,68 @@ class ValueObject extends Core\Key
 	 */
 	public function set( $name, $value )
 	{
-		if($this->isRedisDbFieldProperty( $name ))
+		if(property_exists( $this, $name))
 		{
-			return $this->$name->setValue($value);
+			if($this->$name instanceof Field)
+			{
+				$this->$name->setValue($value);
+				return $this;
+			}
+			$this->$name = $value;
+			return $this;
 		}
 		
 		throw new \RedisTools\Exception(
-			"Given Property Name: '$name' is not an instance of RedisToolsDbField."
+			"Given Property Name: '$name' is no property of this class."
 		);
 	}
 	
-	
+	/**
+	 * Returns the value of a RedisProperty defined with $name
+	 * 
+	 * @param type $name
+	 * @return type 
+	 */
 	public function get( $name )
 	{
-		if($this->isRedisDbFieldProperty( $name ))
+		if(property_exists( $this, $name))
 		{
-			return $this->$name->getValue();
+			if($this->$name instanceof Field)
+			{
+				return $this->$name->getValue();
+			}
+			return $this->$name;
 		}
 		
 		throw new \RedisTools\Exception(
-			"Given Property Name: '$name' is not an instance of RedisToolsDbField."
+			"Given Property Name: '$name' is no property of this class."
 		);
 	}
+	
+	protected function load()
+	{
+		//TODO: load object
+		
+		// if loaded
+		$this->setIsPersistent(true);
+	}
+	
+	public function save()
+	{
+		//TODO: save object
+		$this->setIsPersistent(true);
+	}
+	
+	protected function getIsPersistent()
+	{
+		return $this->isPersistent;
+	}
+
+	protected function setIsPersistent( $boolean )
+	{
+		$this->isPersistent = $boolean;
+	}
+
+
 
 }

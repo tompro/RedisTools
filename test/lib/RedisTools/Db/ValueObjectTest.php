@@ -12,10 +12,6 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected $object;
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
 	protected function setUp()
 	{
 		$this->object = new ValueObjectDummy();
@@ -70,6 +66,12 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 	public function testGetNonexistingRedisProperty()
 	{
 		$this->object->get('nonExisting', 'asdf');
+	}
+	
+	public function testSetGetNormalProperty()
+	{
+		$this->object->set('nonRedisProperty', 'asdf');
+		$this->assertEquals('asdf', $this->object->get('nonRedisProperty'));
 	}
 
 }
