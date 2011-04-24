@@ -47,6 +47,30 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 			$this->object->uniqueIdentifier
 		);
 	}
+	
+	public function testSetGetRedisPropertySimpleValue()
+	{
+		$value = 'asdf';
+		$this->object->set('simpleValue', $value);
+		
+		$this->assertEquals($value, $this->object->get('simpleValue'));
+	}
+	
+	/**
+	 * @expectedException \RedisTools\Exception
+	 */
+	public function testSetNonexistingRedisProperty()
+	{
+		$this->object->set('nonExisting', 'asdf');
+	}
+	
+	/**
+	 * @expectedException \RedisTools\Exception
+	 */
+	public function testGetNonexistingRedisProperty()
+	{
+		$this->object->get('nonExisting', 'asdf');
+	}
 
 }
 

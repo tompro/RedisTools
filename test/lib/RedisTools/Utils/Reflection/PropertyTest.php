@@ -16,6 +16,11 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
 	protected $reflection;
 	
 	/**
+	 * @var \RedisTools\Db\ValueObject
+	 */
+	protected $valueObject;
+	
+	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 */
@@ -25,7 +30,10 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
 		$this->reflection = $reflection;
 		
 		$property = current($reflection->getProperties());
+		
+		$this->valueObject = new \RedisTools\Db\ValueObject();
 		$this->object = new Property(
+			$this->valueObject,
 			$property->getName(), 
 			$property->getDocComment()
 		);
@@ -109,7 +117,9 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
 	protected function getProperty( $name )
 	{
 		$property = $this->reflection->getProperty($name);
+		
 		return new Property(
+			$this->valueObject,
 			$property->getName(),
 			$property->getDocComment()
 		);

@@ -46,6 +46,11 @@ class Property
 	 */
 	private $options;
 
+	/**
+	 * @var \RedisTools\Db\ValueObject
+	 */
+	private $valueObject;
+	
 
 	/**
 	 * Creates a new Redis Property with name $name and an 
@@ -54,11 +59,13 @@ class Property
 	 * If options are given as string the string is parsed for
 	 * doc block annotations that are converted to options.
 	 * 
+	 * @param \RedisTools\Db\ValueObject $valueObject
 	 * @param String $name
 	 * @param array | string - the redis options 
 	 */
-	public function __construct( $name = null, $options = null )
+	public function __construct( $valueObject, $name = null, $options = null )
 	{
+		$this->setValueObject($valueObject);
 		$this->setName($name);
 		$this->setOptions($options);
 	}
@@ -96,7 +103,23 @@ class Property
 		}
 	}
 	
+	/**
+	 * @return \RedisTools\Db\ValueObject
+	 */
+	public function getValueObject()
+	{
+		return $this->valueObject;
+	}
 	
+	/**
+	 * @param \RedisTools\Db\ValueObject $valueObject 
+	 */
+	public function setValueObject( $valueObject )
+	{
+		$this->valueObject = $valueObject;
+	}
+
+		
 	/**
 	 * Parses property doc headers for RedisTools annotations
 	 * and returns them as $options array with name/value pairs for this Property
@@ -185,7 +208,7 @@ class Property
 		$class = $options['var'];
 		if( strstr( $class, Utils\Reflection::REDIS_PROPERTY_PREFIX) !== false )
 		{
-			return new $class();
+			return new $class( $this->getValueObject() );
 		}
 
 		throw new \RedisTools\Exception(

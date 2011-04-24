@@ -120,7 +120,7 @@ class Field
 	 * @param string $name
 	 * @param string $value 
 	 */
-	public function __construct( $name = null, $value = null, $modified = false )
+	public function __construct( $valueObject, $name = null, $value = null, $modified = false )
 	{
 		$this->setName($name, $modified);
 		$this->setValue($value, $modified);

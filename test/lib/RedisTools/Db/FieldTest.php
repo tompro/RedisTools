@@ -12,7 +12,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->object = new Field('name', 'value');
+		$valueObject = new ValueObject();
+		$this->object = new Field($valueObject, 'name', 'value');
 	}
 
 	public function testGetName()

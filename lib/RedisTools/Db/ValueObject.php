@@ -83,6 +83,18 @@ class ValueObject extends Core\Key
 		}
 		return self::$reflectionData[$class];
 	}
+	
+	/**
+	 * Determine if a given name represents a RedisProperty in this class
+	 * 
+	 * @param string $name
+	 * @return boolean
+	 */
+	protected function isRedisDbFieldProperty( $name )
+	{
+		return ( property_exists( $this, $name) 
+			&& $this->$name instanceof Field);
+	}
 		
 	/**
 	 * Constructs a RedisTools ValueObject that can define RedisTools properties
@@ -111,6 +123,36 @@ class ValueObject extends Core\Key
 				$this->$key = $property->getDbFieldClass();
 			}
 		}
+	}
+	
+	/**
+	 * Sets the value of RedisDbField property $name to $value
+	 * @param string $name
+	 * @param string $value 
+	 */
+	public function set( $name, $value )
+	{
+		if($this->isRedisDbFieldProperty( $name ))
+		{
+			return $this->$name->setValue($value);
+		}
+		
+		throw new \RedisTools\Exception(
+			"Given Property Name: '$name' is not an instance of RedisToolsDbField."
+		);
+	}
+	
+	
+	public function get( $name )
+	{
+		if($this->isRedisDbFieldProperty( $name ))
+		{
+			return $this->$name->getValue();
+		}
+		
+		throw new \RedisTools\Exception(
+			"Given Property Name: '$name' is not an instance of RedisToolsDbField."
+		);
 	}
 
 }

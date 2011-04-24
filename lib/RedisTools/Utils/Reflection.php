@@ -114,6 +114,7 @@ class Reflection
 			if(strstr($doc, '@' . self::REDIS_PROPERTY_PREFIX))
 			{
 				$redisProperty = new Reflection\Property(
+					$this->getObject(),
 					$property->getName(), 
 					$property->getDocComment()
 				);
