@@ -10,10 +10,16 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected $object;
 
+	/**
+	 * @var ValueObject
+	 */
+	protected $valueObject;
+
+
 	protected function setUp()
 	{
-		$valueObject = new ValueObject();
-		$this->object = new Field($valueObject, 'name', 'value');
+		$this->valueObject = new ValueObject();
+		$this->object = new Field($this->valueObject, 'name', 'value');
 	}
 
 	public function testGetName()
@@ -38,7 +44,16 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 		$this->object->setValue('qwer', false);
 		$this->assertFalse($this->object->isModified());
 	}
+	
+	public function testOnSave()
+	{
+		$this->assertTrue($this->object->onSave());
+	}
 
+	public function testOnDelete()
+	{
+		$this->assertTrue($this->object->onDelete());
+	}
 }
 
 ?>

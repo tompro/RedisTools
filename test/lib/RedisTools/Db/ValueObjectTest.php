@@ -12,10 +12,27 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 	 */
 	protected $object;
 
+	/**
+	 * @var \Redis
+	 */
+	protected $redis;
+
+	protected $testKey = 'testkey';
+
 	protected function setUp()
 	{
-		$this->object = new ValueObjectDummy();
+		$this->redis = new \Redis();
+		$this->redis->pconnect('127.0.0.1');
 		
+		$this->object = new ValueObjectDummy();
+		$this->object->setKey($this->testKey);
+		$this->object->setRedis($this->redis);
+	}
+	
+	protected function tearDown()
+	{
+		$this->redis->delete($this->testKey);
+		parent::tearDown();
 	}
 
 	public function testGetReflector()
@@ -48,7 +65,6 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 	{
 		$value = 'asdf';
 		$this->object->set('simpleValue', $value);
-		
 		$this->assertEquals($value, $this->object->get('simpleValue'));
 	}
 	
@@ -73,7 +89,69 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 		$this->object->set('nonRedisProperty', 'asdf');
 		$this->assertEquals('asdf', $this->object->get('nonRedisProperty'));
 	}
-
+	
+	public function testIsPersistentOnUnsaved()
+	{
+		$this->assertFalse($this->object->isPersistent());
+	}
+	
+	public function testIsPersistentOnObjectWithNoKey()
+	{
+		$object = new ValueObjectDummy();
+		$this->assertFalse($object->isPersistent());
+	}
+	
+	public function testIsSavedOnObjectWithNoKey()
+	{
+		$object = new ValueObjectDummy();
+		$this->assertFalse($object->isSaved());
+	}
+	
+	public function testIsSavedOnUnsaved()
+	{
+		$this->assertFalse($this->object->isSaved());
+	}
+	
+	public function testSaveWithNoValuesSet()
+	{
+		$this->object->save();
+		$this->assertTrue($this->object->isSaved());
+	}
+	
+	public function testSaveWithOneValue()
+	{
+		$this->object->set('simpleValue', 'value');
+		$this->assertFalse($this->object->isSaved());
+		$this->object->save();
+		$this->assertTrue($this->object->isSaved());
+		
+		$this->assertEquals('value', $this->object->get('simpleValue'));
+		
+		$valueObject = new ValueObjectDummy($this->testKey, $this->redis);
+		
+		$this->assertEquals(
+			$this->object->get('simpleValue'), 
+			$valueObject->get('simpleValue')
+		);
+		
+		$valueObject->set('simpleValue', 'newvalue');
+		$valueObject->save();
+		
+		$this->assertNotEquals(
+			$this->object->get('simpleValue'), 
+			$valueObject->get('simpleValue')
+		);
+		
+		$this->object->setKey($this->testKey . 'other');
+		$this->object->setKey($this->testKey);
+		
+		$this->assertEquals(
+			$this->object->get('simpleValue'), 
+			$valueObject->get('simpleValue')
+		);
+	}
+	
+	
 }
 
 ?>

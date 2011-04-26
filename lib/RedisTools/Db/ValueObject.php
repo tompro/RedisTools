@@ -54,8 +54,63 @@ class ValueObject extends Core\Key
 	 * 
 	 * @var boolean
 	 */
-	private $isPersistent = false;
+	private $isPersistent;
 	
+	/**
+	 * Wether this object has been saved to Redis or not
+	 * 
+	 * @var boolean
+	 */
+	private $isLoaded = false;
+	
+	/**
+	 * @var \RedisTools\Type\Hash 
+	 */
+	private $hash;
+	
+	/**
+	 * @return \RedisTools\Type\Hash
+	 */
+	protected function getHash()
+	{
+		if($this->hash === null)
+		{
+			$this->hash = new \RedisTools\Type\Hash(
+				$this->key, $this->redis
+			);
+		}
+		return $this->hash;
+	}
+	
+	/**
+	 * Sets the unique Redis key for this value object and initializes
+	 * all RedisTools properties. If a key has been set before on this 
+	 * object all properties are reinitialized.
+	 * 
+	 * @param string $key 
+	 */
+	public function setKey( $key )
+	{
+		if($key !== null && $key !== $this->key)
+		{
+			parent::setKey( $key );
+			$this->getHash()->setKey($key);
+			$this->initRedisProperties();
+		}
+	}
+	
+	/**
+	 * @param \Redis $redis 
+	 */
+	public function setRedis( $redis )
+	{
+		if($redis !== null)
+		{
+			parent::setRedis( $redis );
+			$this->getHash()->setRedis($redis);
+		}
+	}
+
 	/**
 	 * @return Utils\Reflection
 	 */
@@ -102,7 +157,6 @@ class ValueObject extends Core\Key
 	public function __construct($key = null, $redis = null )
 	{
 		parent::__construct($key, $redis);
-		$this->initRedisProperties();
 	}
 
 	/**
@@ -118,6 +172,7 @@ class ValueObject extends Core\Key
 				$this->$key = $property->getDbFieldClass();
 			}
 		}
+		$this->isLoaded = false;
 	}
 	
 	/**
@@ -151,6 +206,7 @@ class ValueObject extends Core\Key
 	 */
 	public function get( $name )
 	{
+		$this->load();
 		if(property_exists( $this, $name))
 		{
 			if($this->$name instanceof Field)
@@ -165,30 +221,131 @@ class ValueObject extends Core\Key
 		);
 	}
 	
+	/**
+	 * Returns an array of property names that should be
+	 * loaded from the basic hash object.
+	 * 
+	 * @return array 
+	 */
+	protected function getLoadProperties()
+	{
+		$result = array();
+		foreach($this->getRedisToolsProperties() as $property)
+		{
+			$result[] = $property->getName();
+		}
+		return $result;
+	}
+	
+	protected function getSaveProperties()
+	{
+		$result = array();
+		/* @var $key Field */
+		foreach($this->getRedisToolsProperties() as $key => $property)
+		{
+			if($this->$key->isModified())
+			{
+				$result[$this->$key->getName()] = $this->$key;
+			}
+		}
+		return $result;
+	}
+
 	protected function load()
 	{
-		//TODO: load object
-		
-		// if loaded
-		$this->setIsPersistent(true);
+		if( ! $this->isLoaded )
+		{
+			$values = $this->getHash()->getMulti(
+				$this->getLoadProperties()
+			);
+
+			/* @var $key Field */
+			foreach( $values as $key => $value )
+			{
+				if($value)
+				{
+					$this->$key->setValue($value, false);
+				}
+			}
+		}
+		$this->isLoaded = true;
 	}
 	
 	public function save()
 	{
-		//TODO: save object
+		/* @var $properties Field */
+		$properties = $this->getSaveProperties();
+		$toSave = array();
+		
+		/* @var $property Field */
+		foreach($properties as $property)
+		{
+			if($property->onSave())
+			{
+				$toSave[$property->getName()] = $property->getValue();
+			}
+			
+			if($this->getHash()->setMulti($toSave))
+			{
+				foreach($toSave as $key => $value)
+				{
+					$properties[$key]->setModified(false);
+				}
+			}
+		}
+		
 		$this->setIsPersistent(true);
 	}
 	
-	protected function getIsPersistent()
+	/**
+	 * Wether this object has unsaved RedisProperties or not
+	 * 
+	 * @return boolean
+	 */
+	public function isSaved()
 	{
+		if($this->isPersistent())
+		{
+			return ( count($this->getSaveProperties()) === 0); 
+		}
+		return false;
+	}
+	
+	/**
+	 * Determine wether this object has been saved to db already.
+	 * Nevertheless this value does not indicate that the currently
+	 * set values are all in sync with the database. To determine that
+	 * you have to call <code>ValueObject::isSaved()</code>.
+	 * 
+	 * @return boolean
+	 */
+	public function isPersistent()
+	{
+		if($this->isPersistent === null)
+		{
+			try 
+			{
+				$this->setIsPersistent(
+					$this->getHash()->exists()
+				);
+			}
+			catch ( \RedisTools\Exception $e )
+			{
+				return false;
+			}
+		}
+		
 		return $this->isPersistent;
 	}
 
+	/**
+	 * @param boolean $boolean 
+	 */
 	protected function setIsPersistent( $boolean )
 	{
 		$this->isPersistent = $boolean;
 	}
-
-
+	
+	
 
 }

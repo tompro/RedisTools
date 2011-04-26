@@ -186,7 +186,6 @@ class Property
 	public function getDbFieldClass()
 	{
 		$options = $this->getOptions();
-		var_dump($options);
 		if( ! $this->isDbField() )
 		{
 			throw new \RedisTools\Exception(
@@ -208,7 +207,7 @@ class Property
 		$class = $options['var'];
 		if( strstr( $class, Utils\Reflection::REDIS_PROPERTY_PREFIX) !== false )
 		{
-			return new $class( $this->getValueObject() );
+			return new $class( $this->getValueObject(), $this->getName() );
 		}
 
 		throw new \RedisTools\Exception(

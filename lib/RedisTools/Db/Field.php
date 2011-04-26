@@ -52,6 +52,11 @@ class Field
 	protected $isModified;
 
 	/**
+	 * @var ValueObject
+	 */
+	protected $valueObject;
+	
+	/**
 	 * Returns the name of this field
 	 * 
 	 * @return string
@@ -115,13 +120,54 @@ class Field
 		$this->isModified = $boolean;
 	}
 
-				
 	/**
+	 * @return ValueObject
+	 */
+	protected function getValueObject()
+	{
+		return $this->valueObject;
+	}
+
+	/**
+	 * @param ValueObject $valueObject 
+	 */
+	protected function setValueObject( $valueObject )
+	{
+		$this->valueObject = $valueObject;
+	}
+
+	/**
+	 * Template method to be implemented by descending classes
+	 * to perform further db operations eg. updating indexes and lookup tables
+	 * 
+	 * @return boolean - success
+	 */
+	public function onSave()
+	{
+		return true;
+	}
+	
+	/**
+	 * Template method to be implemented by descending classes
+	 * to perform further db operations eg. deleting indexes and 
+	 * lookup tables
+	 * 
+	 * @return boolean - success
+	 */
+	public function onDelete()
+	{
+		return true;
+	}
+
+
+	/**
+	 * @param ValueObject $valueObject
 	 * @param string $name
 	 * @param string $value 
 	 */
 	public function __construct( $valueObject, $name = null, $value = null, $modified = false )
 	{
+		$this->setValueObject($valueObject);
 		$this->setName($name, $modified);
 		$this->setValue($value, $modified);
 	}

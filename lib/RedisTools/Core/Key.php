@@ -35,7 +35,7 @@ class Key
 	/**
 	 * @var string
 	 */
-	private $key;
+	protected $key;
 	
 	/**
 	 * @var \Redis
