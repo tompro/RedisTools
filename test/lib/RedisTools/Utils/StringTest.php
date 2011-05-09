@@ -25,7 +25,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
 	{
 		$string = "getNameByValueOrderbyOrdervalueDesc";
 		$result = $this->object->splitCamelCase($string);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		
 		$this->assertEquals('get', $result[0]);
 		$this->assertEquals('By', $result[2]);

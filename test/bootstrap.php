@@ -5,6 +5,7 @@
  * @author protom
  */
 
+
 error_reporting(E_ALL);
 
 ini_set(
@@ -14,10 +15,14 @@ ini_set(
 	.PATH_SEPARATOR.dirname(__FILE__).'/lib/'
 );
 
-function __autoload($className) 
+function loadClass($className) 
 {
 	$path = str_replace('\\', '/', $className);
-    require_once $path . '.php';
+	try{
+		require_once $path . '.php';
+	}catch(Exception $e){}
 }
+
+spl_autoload_register('loadClass');
 
 ?>

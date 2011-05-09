@@ -150,7 +150,7 @@ class OrderedListTest extends \PHPUnit_Framework_TestCase
 	public function testGetValuesOnEmptyKey()
 	{
 		$result = $this->object->getValues();
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(0, count($result));
 	}
 	

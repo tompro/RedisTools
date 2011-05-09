@@ -434,7 +434,7 @@ class ArrayListTest extends \PHPUnit_Framework_TestCase
 	public function testSliceOnEmptyKey()
 	{
 		$result = $this->object->slice(0);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(0, count($result));
 	}
 	
@@ -445,21 +445,21 @@ class ArrayListTest extends \PHPUnit_Framework_TestCase
 		$this->object->push('c');
 		
 		$result = $this->object->slice(0);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(3, count($result));
 		
 		$result = $this->object->slice(0, 1);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(2, count($result));
 		$this->assertEquals('a', $result[0]);
 		
 		$result = $this->object->slice(1);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(2, count($result));
 		$this->assertEquals('b', $result[0]);
 		
 		$result = $this->object->slice(2, 10);
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(1, count($result));
 		$this->assertEquals('c', $result[0]);
 	}

@@ -30,12 +30,11 @@ class UidTest extends \PHPUnit_Framework_TestCase
 	
 	public function testGenerate()
 	{
-		$this->assertType('string', $this->object->generate());
+		$this->assertInternalType('string', $this->object->generate());
 		$this->assertEquals(32, strlen($this->object->generate()));
 		
-		$this->assertType('string', $this->object->generate('some seed value'));
+		$this->assertInternalType('string', $this->object->generate('some seed value'));
 		$this->assertEquals(32, strlen($this->object->generate('some other seed value')));
-		
 	}
 	
 	public function testGenerateMultipleIds()

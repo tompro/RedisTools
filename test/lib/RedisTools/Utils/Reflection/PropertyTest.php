@@ -59,7 +59,7 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
 	public function testParseOptionFromDocComment()
 	{
 		$options = $this->object->getOptions();
-		$this->assertType('array', $options);
+		$this->assertInternalType('array', $options);
 		$this->assertGreaterThan(0, count($options));
 		
 		$this->assertEquals('String', $options['DbField']);

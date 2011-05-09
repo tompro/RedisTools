@@ -180,7 +180,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	{
 		$keys = $this->object->getKeys();
 		
-		$this->assertType('array',
+		$this->assertInternalType('array',
 			$keys,
 			'Fetching keys should deliver array. '
 		);
@@ -198,7 +198,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 		
 		$keys = $this->object->getKeys();
 		
-		$this->assertType('array',
+		$this->assertInternalType('array',
 			$keys,
 			'Fetching keys should deliver array. '
 		);
@@ -218,7 +218,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	{
 		$values = $this->object->getValues();
 		
-		$this->assertType('array', 
+		$this->assertInternalType('array', 
 			$values,
 			'Fetching values should return array. '
 		);
@@ -236,7 +236,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 		
 		$values = $this->object->getValues();
 		
-		$this->assertType('array',
+		$this->assertInternalType('array',
 			$values,
 			'Fetching values should deliver array. '
 		);
@@ -256,7 +256,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	{
 		$all = $this->object->getAll();
 		
-		$this->assertType('array',
+		$this->assertInternalType('array',
 			$all,
 			'Fetching all values should return array. '
 		);
@@ -271,7 +271,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 		
 		$all = $this->object->getAll();
 		
-		$this->assertType('array',
+		$this->assertInternalType('array',
 			$all,
 			'Fetching all values should return array. '
 		);
@@ -377,7 +377,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	public function testGetMultOnNonExistingHash()
 	{
 		$result = $this->object->getMulti( array('key1', 'key2' ) );
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		
 		$this->assertEquals(2, count($result));
 		foreach($result as $value)
@@ -391,7 +391,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 		$this->insertValues(5);
 		$result = $this->object->getMulti( array('key1', 'key3', 'key2', 'nonexisting') );
 		
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(4, \count($result));
 		
 		$this->assertEquals('value1', $result['key1']);

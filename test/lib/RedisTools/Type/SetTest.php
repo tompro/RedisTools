@@ -210,7 +210,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
 	public function testGetValuesOnEmptyKey()
 	{
 		$result = $this->object->getValues();
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		
 		$this->assertEquals(0, count($result));
 	}
@@ -224,7 +224,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
 		}
 		
 		$result = $this->object->getValues();
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		
 		foreach ($result as $value)
 		{
@@ -237,7 +237,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
 	public function testGetDiffOnEmptyKeyWithNoSetsToCompare()
 	{
 		$result = $this->object->getDiff();
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(0, count($result));
 	}
 	
@@ -255,7 +255,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
 		$this->fillSetWithTestValues($this->object, $values);
 		
 		$result = $this->object->getDiff();
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertEquals(count($values), count($result));
 		
 		foreach($result as $value)
@@ -284,7 +284,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
 		$setCompare = $this->getTestSet('testkey1', $values2);
 		
 		$result = $this->object->getDiff( $setCompare );
-		$this->assertType('array', $result);
+		$this->assertInternalType('array', $result);
 		$this->assertContains('v1', $result);
 		$this->assertContains('v5', $result);
 		$this->assertNotContains('v2', $result);

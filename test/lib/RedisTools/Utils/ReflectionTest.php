@@ -46,7 +46,7 @@ class ReflectionTest extends \PHPUnit_Framework_TestCase
 	public function testGetRedisToolsPropertiesArray()
 	{
 		$properties = $this->object->getRedisToolsProperties();
-		$this->assertType('array', $properties);
+		$this->assertInternalType('array', $properties);
 	}
 	
 	public function testGetRedisToolsPropertiesContainsProperties()
