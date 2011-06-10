@@ -307,7 +307,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	public function testMoveToDbNxKey()
 	{
 		$this->setupObject();
-		$this->assertFalse(
+		$this->assertTrue(
 			$this->object->moveToDb( 1 )
 		);
 	}
