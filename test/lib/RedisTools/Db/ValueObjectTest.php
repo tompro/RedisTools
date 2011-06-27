@@ -37,7 +37,7 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 
 	public function testGetReflector()
 	{
-		$this->assertType('\RedisTools\Utils\Reflection', $this->object->getReflector());
+		$this->assertInstanceOf('\RedisTools\Utils\Reflection', $this->object->getReflector());
 	}
 
 	public function testSetReflector()

@@ -28,7 +28,7 @@
  */
 namespace RedisTools\Db;
 
-class Field
+abstract class Field
 {
 	/**
 	 * name of this field
@@ -43,7 +43,14 @@ class Field
 	 * @var string
 	 */
 	protected $value;
-	
+
+	/**
+	 * Value of this property before it was changed
+	 *
+	 * @var string
+	 */
+	protected $previousValue;
+
 	/**
 	 * wether this field has changed
 	 * 
@@ -55,7 +62,27 @@ class Field
 	 * @var ValueObject
 	 */
 	protected $valueObject;
-	
+
+	/**
+	 * Wether this field has a value that should be saved within the value object Hash.
+	 * Despite this is true for most values there are some exceptions like n:m relations
+	 * that do not need to have a value in the ValueObject. Set this value to false for
+	 * such cases.
+	 *
+	 * @var boolean
+	 */
+	protected $hasObjectValue = true;
+
+	/**
+	 * Wether this field has a representation in the ValueObjects Hash
+	 *
+	 * @return boolean
+	 */
+	public function hasObjectValue()
+	{
+		return $this->hasObjectValue;
+	}
+
 	/**
 	 * Returns the name of this field
 	 * 
@@ -71,7 +98,7 @@ class Field
 	 * 
 	 * @param string $name 
 	 */
-	protected function setName( $name )
+	public function setName( $name )
 	{
 		$this->name = $name;
 	}
@@ -95,6 +122,10 @@ class Field
 	{
 		if( $this->value != $value )
 		{
+			if($this->previousValue === null)
+			{
+				$this->previousValue = $this->value;
+			}
 			$this->value = $value;
 			$this->setModified($modified);
 		}
@@ -142,11 +173,8 @@ class Field
 	 * 
 	 * @return boolean - success
 	 */
-	public function onSave()
-	{
-		return true;
-	}
-	
+	abstract public function onSave();
+
 	/**
 	 * Template method to be implemented by descending classes
 	 * to perform further db operations eg. deleting indexes and 
@@ -154,16 +182,14 @@ class Field
 	 * 
 	 * @return boolean - success
 	 */
-	public function onDelete()
-	{
-		return true;
-	}
+	abstract function onDelete();
 
 
 	/**
-	 * @param ValueObject $valueObject
+	 * @param \RedisTools\Db\ValueObject $valueObject
 	 * @param string $name
-	 * @param string $value 
+	 * @param string $value
+	 * @param bool $modified
 	 */
 	public function __construct( $valueObject, $name = null, $value = null, $modified = false )
 	{

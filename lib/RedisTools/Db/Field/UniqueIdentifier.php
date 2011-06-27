@@ -26,12 +26,90 @@
  * @author Thomas Profelt <office@protom.eu>
  * @since 12.04.2011
  */
+
 namespace RedisTools\Db\Field;
 use RedisTools\Db;
 
 class UniqueIdentifier extends Db\Field
 {
-	
-	
-	
+	/**
+	 * @var \RedisTools\Type\Hash
+	 */
+	protected $lookupTable;
+
+	/**
+	 * Deletes the mapping between this unique identifier and the ValueObjects key
+	 *
+	 * @return boolean - success
+	 */
+	function onDelete()
+	{
+		return $this->getLookupTable()->deleteKey($this->getValue());
+	}
+
+	/**
+	 * Inserts the mapping between the value of this unique identifier and the ValueObjects key
+	 *
+	 * @return boolean - success
+	 */
+	public function onSave()
+	{
+		$value = $this->getValue();
+		if(!empty( $value ))
+		{
+			return $this->getLookupTable()->set(
+				 $this->getValue(),
+				 $this->getValueObject()->getKey()
+			 ) > 0;
+		}
+		return false;
+	}
+
+	/**
+	 * Sets the lookup table instance
+	 *
+	 * @param \RedisTools\Type\Hash $lookupTable
+	 * @return void
+	 */
+	public function setLookupTable($lookupTable)
+	{
+		$this->lookupTable = $lookupTable;
+	}
+
+	/**
+	 * Returns the lookup table to be used for mapping unique identifiers
+	 *
+	 * @return \RedisTools\Type\Hash
+	 */
+	public function getLookupTable()
+	{
+		if($this->lookupTable === null)
+		{
+			$this->lookupTable = new \RedisTools\Type\Hash(
+				$this->getLookupTableKey(),
+				$this->getValueObject()->getRedis()
+			);
+		}
+		return $this->lookupTable;
+	}
+
+	/**
+	 * Returns the generated Redis key for the LookupTable
+	 *
+	 * @return string
+	 */
+	protected function getLookupTableKey()
+	{
+		$key = $this->getValueObject()->getKey();
+		$name = $this->getName();
+
+		if($key != '' && $name != '')
+		{
+			return md5($this->getValueObject()->getKey() . $this->getName());
+		}
+
+		throw new \RedisTools\Exception("Could not generate key for lookup table because key '$key' and/or name '$name' are empty.");
+	}
+
+
 }

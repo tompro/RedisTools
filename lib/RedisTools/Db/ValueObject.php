@@ -280,17 +280,17 @@ class ValueObject extends Core\Key
 		/* @var $property Field */
 		foreach($properties as $property)
 		{
-			if($property->onSave())
+			if($property->onSave() && $property->hasObjectValue())
 			{
 				$toSave[$property->getName()] = $property->getValue();
 			}
-			
-			if($this->getHash()->setMulti($toSave))
+		}
+
+		if($this->getHash()->setMulti($toSave))
+		{
+			foreach($toSave as $key => $value)
 			{
-				foreach($toSave as $key => $value)
-				{
-					$properties[$key]->setModified(false);
-				}
+				$properties[$key]->setModified(false);
 			}
 		}
 		
