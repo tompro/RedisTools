@@ -34,6 +34,13 @@ class RedisToolsTest extends PHPUnit_Framework_TestCase
 	{
 		RedisTools::setRedis(new Redis());
 	}
+	
+	public function testGetSetRedis()
+	{
+		$redis = new Redis();
+		RedisTools::setRedis($redis);
+		$this->assertEquals($redis, RedisTools::getRedis());
+	}
 
 }
 

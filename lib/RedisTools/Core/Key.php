@@ -59,6 +59,11 @@ class Key
 	 */
 	public function getRedis()
 	{
+		if($this->redis === null)
+		{
+			$this->redis = \RedisTools::getRedis();
+		}
+		
 		If($this->redis !== null)
 		{
 			return $this->redis;

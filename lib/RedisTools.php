@@ -48,9 +48,19 @@ class RedisTools
 	 * @param Redis $redis 
 	 * @return void
 	 */
-	public static function setRedis( Redis $redis )
+	public static function setRedis( $redis )
 	{
 		self::$redis = $redis;
+	}
+	
+	/**
+	 * returns the default Redis instance
+	 * 
+	 * @return Redis
+	 */
+	public static function getRedis()
+	{
+		return self::$redis;
 	}
 
 }

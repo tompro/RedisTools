@@ -30,9 +30,10 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testConstructWithKey()
 	{
+		\RedisTools::setRedis(null);
 		$object = new Dataconstruct( 'asdf' );
 		$this->assertEquals('asdf', $object->getKey());
-		$this->assertNull($object->getRedis());
+		$object->getRedis();
 	}
 	
 	public function testConstructWithCompleteConfiguration()
@@ -48,6 +49,7 @@ class DataconstructTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testGetRedisNoInstanceSet()
 	{
+		\RedisTools::setRedis(null);
 		$this->object->getRedis();
 	}
 	
