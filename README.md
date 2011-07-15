@@ -11,6 +11,7 @@ the Redis types (in Redis\Type\\*) are already feature complete.
 
 RedisTools Types
 ================
+Please keep in mind that all RedisTools\Types are low level implemetations. Therefore all Redis operations are executed immediately. So setting a value of a Type also writes this value to Redis.
 
 ## Setup your Redis instance
 
@@ -20,8 +21,6 @@ to work with. You can either provide the Type with an instance in construction o
 
 If you want to reuse your intance throughout all your Redis types, you can set a global instance that will be used by all type instances as default (which can be 
 overridden for each instance individually). 
-
-Please keep in mind that all RedisTools\Types are low level implemetations. Therefore all Redis operations are executed immediately. So setting a value of a Type also writes this value to Redis.
 
 ##### Example
 <pre>
@@ -39,12 +38,15 @@ The String Type of RedisTools is the most simples type of all. It is essentially
 
 ##### Examples
 <pre>
-$string = new \RedisTools\Type\String();
+// all examples assume this namespace to provide a convinient read
+namespace RedisTools\Type;
+
+$string = new String();
 
 $string->setKey('name');
 $string->setValue('Mario');
 
-$otherString = new RedisTools\Type\String('name');
+$otherString = new String('name');
 echo $otherString->getValue(); // -> Mario
 
 $otherString->setValue('Luigi');
