@@ -31,6 +31,39 @@ $redis->pconnect('127.0.0.1');
 RedisTools::setRedis( $redis );
 </pre>
 
+## Shared functionality
+There are several key operations you can perform with all different RedisTools\Types. The following methods can be used with all types.
+
+<pre>
+// delete all data stored at the configured key
+$exampleType->delete();
+
+// determine wether the type already exists in Redis 
+$exampleType->exists();
+
+// sets the expiration time in seconds 
+$exampleType->setTtl( $ttl );
+
+// returns the remaining time till expiration in seconds
+$exampleType->getTtl();
+
+// set the expiration data as a timestamp
+$exampleType->expireAt( $timestamp )
+
+// returns the (Redis) type of the data stored at key
+$exampleType->getType();
+
+// renames the key of a Redis type
+$exampleType->renameKey( $newName );
+
+// same as renameKey but only executes if $newName does not already exist
+$exampleType->renameKeyNx( $newName );
+
+// moves a Redis type into another database
+$exampleType->moveToDb( $integer );
+
+</pre>
+
 ## String
 
 ##### Description
@@ -39,7 +72,7 @@ The String Type of RedisTools is the most simples type of all. It is essentially
 ##### Examples
 <pre>
 // all examples assume this namespace to provide a convinient read
-namespace RedisTools\Type;
+use RedisTools\Type\String;
 
 $string = new String();
 
@@ -55,11 +88,23 @@ echo $string->getValue(); // -> Luigi
 
 ## Bitmap
 ##### Description
-
+A Bitmap enables you to store boolean types by an index. Such Redis bitmaps are fast and have a  very small memory footprint.
+If the bitvalue at the given index is not set 0 is returned.
 ##### Examples
+<pre>
+use RedisTools\Type\Bitmap;
+
+$userId = 214;
+$voterlist = new Bitmap('has_voted');
+if(! $voterlist->getBit($userId) ){
+	// vote
+	$voterlist->setBit($userId, 1);
+}
+</pre>
 
 ## Hash
 ##### Description
+
 
 ##### Examples
 

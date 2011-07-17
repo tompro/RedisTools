@@ -124,7 +124,7 @@ class Dataconstruct extends Key
 	 */
 	public function moveToDb( $db )
 	{
-		return $this->getRedis()->move($this->getKey(), 1);
+		return $this->getRedis()->move($this->getKey(), $db);
 	}
 	
 	/**
