@@ -67,7 +67,7 @@ $exampleType->moveToDb( $integer );
 ## String
 
 ##### Description
-The String Type of RedisTools is the most simples type of all. It is essentially a key - value pair with some additional functionality that comes with Redis.
+The String Type of RedisTools is the most simplest type of all. It is essentially a key - value pair with some additional functionality that comes with Redis.
 
 ##### Examples
 <pre>
@@ -88,8 +88,9 @@ echo $string->getValue(); // -> Luigi
 
 ## Bitmap
 ##### Description
-A Bitmap enables you to store boolean types by an index. Such Redis bitmaps are fast and have a  very small memory footprint.
-If the bitvalue at the given index is not set 0 is returned.
+A Bitmap enables you to store boolean types by an index. Such Redis bitmaps are 
+fast and have a  very small memory footprint. If the bitvalue at the given index 
+is not set, 0 is returned.
 ##### Examples
 <pre>
 use RedisTools\Type\Bitmap;
@@ -104,10 +105,41 @@ if(! $voterlist->getBit($userId) ){
 
 ## Hash
 ##### Description
-
+A Redis Hash is very simmilar to a hash in PHP. It enables you to store string/integer 
+values that can be accessed via a custom string key. A PHP example would look like 
+array('key' => 'value'). For performance reasons this class does not implement the 
+Iterator Interface (to be used with foreach), use the getAll() method to iterate over 
+all values. 
 
 ##### Examples
+<pre>
+use RedisTools\Type\Hash;
 
+$hash = new Hash('my_hash');
+
+$hash->set('color', 'blue');
+$hash->keyExists('color'); // -> true
+echo $hash->getValue('color'); // -> blue
+
+$hash->set('name', 'Luigi');
+echo count($hash); // -> 2
+
+$hash->getKeys(); // -> array('color', 'name')
+$hash->getValues(); // -> array('blue', 'Luigi')
+$hash->getAll(); // -> array('color' => 'blue', 'name' => 'Luigi')
+
+$hash->set('views', 0);
+$hash->incrementValue('views');
+echo $hash->getValue('views'); // -> 1
+
+$hash->getMulti(array('name', 'views', 'nonexisting')); // -> array('Luigi', 1, false)
+$hash->setMulti(array('name' => 'Mario', 'views' => 5));
+
+$hash->setIfNotExists('color', 'red'); // -> false
+$hash->deleteKey('color');
+$hash->setIfNotExists('color', 'red'); // -> true
+
+</pre>
 ## Set
 ##### Description
 
