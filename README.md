@@ -141,8 +141,49 @@ $hash->setIfNotExists('color', 'red'); // -> true
 
 </pre>
 ## Set
+A Redis Set is a collection of values stored in a random order. Every value can 
+only exist once in a Set. 
 ##### Description
+<pre>
+user RedisTools\Type\Set;
 
+$set = new Set('characters');
+
+$set->addValue('Mario'); // -> true
+$set->addValue('Mario'); // -> false
+$set->addValue('Luigi'); // -> true
+
+$set->contains('Luigi'); // -> true
+$set->contains('Peach'); // -> false
+
+$set->deleteValue('Peach'); // -> false
+$set->deleteValue('Mario'); // -> true
+$set->contains('Mario'); // -> false
+
+$set->addValue('Peach');
+count($set); // -> 2
+$set->getValues(); // -> array('Luigi', 'Peach')  in random order!
+
+$set->addValue('Mario');
+$set2 = new Set('others');
+$set2->addValue('Mario');
+$set->getDiff($set2); // -> array('Peach', 'Luigi')
+
+$set3 = new Set('more');
+$set3->addValue('Luigi');
+$set->getDiff(array($set2, $set3)); // -> array('Peach');
+
+$set->getDiff($set2, true, 'result');
+$result = new Set('result');
+$result->getValues(); // -> array('Peach', 'Luigi')
+
+$set->moveValueToSet('Mario', $set3);
+$set->contains('Mario'); // -> false
+$set3->contains('Mario'); // -> true
+
+$set->pop(); // returns random value -> Luigi || Peach
+
+</pre>
 ##### Examples
 
 ## ArrayList
