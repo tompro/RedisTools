@@ -197,19 +197,6 @@ class ArrayList extends \RedisTools\Core\Dataconstruct
 	{
 		return $this->getRedis()->lRem( $this->getKey(), $value, $count );
 	}
-	
-	/**
-	 * Removes the first count occurences of the value element from the list. 
-	 * If count is zero, all the matching elements are removed. 
-	 * If count is negative, elements are removed from tail to head.
-	 * 
-	 * @param type $key
-	 * @param type $vaule
-	 * @param type $count
-	 * @return int | boolean false - the number of elements removed or false if key is no list
-	 */
-	//public function lRem( $key, $vaule, $count ){}
-
 
 	/**
 	 * returns the number of elements in this ArrayList
