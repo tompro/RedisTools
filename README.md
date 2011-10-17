@@ -141,11 +141,12 @@ $hash->setIfNotExists('color', 'red'); // -> true
 
 </pre>
 ## Set
+##### Description
 A Redis Set is a collection of values stored in a random order. Every value can 
 only exist once in a Set. 
-##### Description
+##### Examples
 <pre>
-user RedisTools\Type\Set;
+use RedisTools\Type\Set;
 
 $set = new Set('characters');
 
@@ -184,12 +185,50 @@ $set3->contains('Mario'); // -> true
 $set->pop(); // returns random value -> Luigi || Peach
 
 </pre>
-##### Examples
 
 ## ArrayList
 ##### Description
-
+A Redis ArrayList is very simmilar to a PHP array. It contains string values that 
+are indexed by an integer. Values can be present multiple times. A lot of PHP's 
+native array function can be applied to a Redis ArrayList as well.
 ##### Examples
+<pre>
+use RedisTools/Type/ArrayList
+$list = new ArrayList('my_list');
+
+$list->push('a');
+$list->push('b');
+
+count($list); // -> 2
+
+foreach($list as $key -> $value) {
+  echo $key . " = " . $value . "; ";      // -> 0 = a; 1 = b;
+}
+
+$list->push('c', true); // -> [c, a, b]
+$list->push('a'); // -> [c, a, b, a]
+$list->push('a', false, false) // -> returns false [c, a, b, a]
+
+$list->pop(); // -> a; [c, a, b]
+$list->shift(); // -> c; [a, b]
+
+$list->getValueAt(1); // -> b
+$list->setValueAt(0, 'c'); // [c, b]
+
+$list->push('a');
+$list->push('b');
+$list->push('c'); // -> [c, b, a, b, c]
+
+$list->slice(2); // -> [a, b, c]
+$list->slice(2, 4); // -> [a, b]
+
+$list->insertBeforeValue('b', 'x'); // -> [c, x, b, a, b, c]
+$list->insertAfterValue('b', 'x'); // -> [c, x, b, x, a, b, c]
+
+$list->trim(1, 3) // -> [x, b, x]
+$list->removeValues('x') // -> [b]
+
+</pre>
 
 ## OrderedList
 ##### Description
