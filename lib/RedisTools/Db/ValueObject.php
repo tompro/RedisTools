@@ -237,6 +237,15 @@ class ValueObject extends Core\Key
 		return $result;
 	}
 	
+    /**
+     * Returns all properties of this value object that have been
+     * changend and have not been saved so far. The resulting array has
+     * the fields names as key and the property object as its value. 
+     *
+     * Exammple: array('myPropertyName' => [Field object])
+     *
+     * @return array
+     */
 	protected function getSaveProperties()
 	{
 		$result = array();
