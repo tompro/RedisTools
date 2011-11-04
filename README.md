@@ -67,7 +67,7 @@ $exampleType->moveToDb( $integer );
 ## String
 
 ##### Description
-The String Type of RedisTools is the most simples type of all. It is essentially a key - value pair with some additional functionality that comes with Redis.
+The String Type of RedisTools is the most simplest type of all. It is essentially a key - value pair with some additional functionality that comes with Redis.
 
 ##### Examples
 <pre>
@@ -88,8 +88,9 @@ echo $string->getValue(); // -> Luigi
 
 ## Bitmap
 ##### Description
-A Bitmap enables you to store boolean types by an index. Such Redis bitmaps are fast and have a  very small memory footprint.
-If the bitvalue at the given index is not set 0 is returned.
+A Bitmap enables you to store boolean types by an index. Such Redis bitmaps are 
+fast and have a  very small memory footprint. If the bitvalue at the given index 
+is not set, 0 is returned.
 ##### Examples
 <pre>
 use RedisTools\Type\Bitmap;
@@ -104,19 +105,130 @@ if(! $voterlist->getBit($userId) ){
 
 ## Hash
 ##### Description
-
+A Redis Hash is very simmilar to a hash in PHP. It enables you to store string/integer 
+values that can be accessed via a custom string key. A PHP example would look like 
+array('key' => 'value'). For performance reasons this class does not implement the 
+Iterator Interface (to be used with foreach), use the getAll() method to iterate over 
+all values. 
 
 ##### Examples
+<pre>
+use RedisTools\Type\Hash;
 
+$hash = new Hash('my_hash');
+
+$hash->set('color', 'blue');
+$hash->keyExists('color'); // -> true
+echo $hash->getValue('color'); // -> blue
+
+$hash->set('name', 'Luigi');
+echo count($hash); // -> 2
+
+$hash->getKeys(); // -> array('color', 'name')
+$hash->getValues(); // -> array('blue', 'Luigi')
+$hash->getAll(); // -> array('color' => 'blue', 'name' => 'Luigi')
+
+$hash->set('views', 0);
+$hash->incrementValue('views');
+echo $hash->getValue('views'); // -> 1
+
+$hash->getMulti(array('name', 'views', 'nonexisting')); // -> array('Luigi', 1, false)
+$hash->setMulti(array('name' => 'Mario', 'views' => 5));
+
+$hash->setIfNotExists('color', 'red'); // -> false
+$hash->deleteKey('color');
+$hash->setIfNotExists('color', 'red'); // -> true
+
+</pre>
 ## Set
 ##### Description
-
+A Redis Set is a collection of values stored in a random order. Every value can 
+only exist once in a Set. 
 ##### Examples
+<pre>
+use RedisTools\Type\Set;
+
+$set = new Set('characters');
+
+$set->addValue('Mario'); // -> true
+$set->addValue('Mario'); // -> false
+$set->addValue('Luigi'); // -> true
+
+$set->contains('Luigi'); // -> true
+$set->contains('Peach'); // -> false
+
+$set->deleteValue('Peach'); // -> false
+$set->deleteValue('Mario'); // -> true
+$set->contains('Mario'); // -> false
+
+$set->addValue('Peach');
+count($set); // -> 2
+$set->getValues(); // -> array('Luigi', 'Peach')  in random order!
+
+$set->addValue('Mario');
+$set2 = new Set('others');
+$set2->addValue('Mario');
+$set->getDiff($set2); // -> array('Peach', 'Luigi')
+
+$set3 = new Set('more');
+$set3->addValue('Luigi');
+$set->getDiff(array($set2, $set3)); // -> array('Peach');
+
+$set->getDiff($set2, true, 'result');
+$result = new Set('result');
+$result->getValues(); // -> array('Peach', 'Luigi')
+
+$set->moveValueToSet('Mario', $set3);
+$set->contains('Mario'); // -> false
+$set3->contains('Mario'); // -> true
+
+$set->pop(); // returns random value -> Luigi || Peach
+
+</pre>
 
 ## ArrayList
 ##### Description
-
+A Redis ArrayList is very simmilar to a PHP array. It contains string values that 
+are indexed by an integer. Values can be present multiple times. A lot of PHP's 
+native array function can be applied to a Redis ArrayList as well.
 ##### Examples
+<pre>
+use RedisTools/Type/ArrayList
+$list = new ArrayList('my_list');
+
+$list->push('a');
+$list->push('b');
+
+count($list); // -> 2
+
+foreach($list as $key -> $value) {
+  echo $key . " = " . $value . "; ";      // -> 0 = a; 1 = b;
+}
+
+$list->push('c', true); // -> [c, a, b]
+$list->push('a'); // -> [c, a, b, a]
+$list->push('a', false, false) // -> returns false [c, a, b, a]
+
+$list->pop(); // -> a; [c, a, b]
+$list->shift(); // -> c; [a, b]
+
+$list->getValueAt(1); // -> b
+$list->setValueAt(0, 'c'); // [c, b]
+
+$list->push('a');
+$list->push('b');
+$list->push('c'); // -> [c, b, a, b, c]
+
+$list->slice(2); // -> [a, b, c]
+$list->slice(2, 4); // -> [a, b]
+
+$list->insertBeforeValue('b', 'x'); // -> [c, x, b, a, b, c]
+$list->insertAfterValue('b', 'x'); // -> [c, x, b, x, a, b, c]
+
+$list->trim(1, 3) // -> [x, b, x]
+$list->removeValues('x') // -> [b]
+
+</pre>
 
 ## OrderedList
 ##### Description
