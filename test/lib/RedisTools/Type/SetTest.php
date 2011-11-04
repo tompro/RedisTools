@@ -35,22 +35,22 @@ class SetTest extends \PHPUnit_Framework_TestCase
 	
 	public function testAddValue()
 	{
-		$this->assertTrue(
+		$this->assertEquals(1,
 			$this->object->addValue( 'asdf' )
 		);
 		
-		$this->assertFalse(
+		$this->assertEquals(0,
 			$this->object->addValue( 'asdf' )
 		);
 		
-		$this->assertTrue(
+		$this->assertEquals(1,
 			$this->object->addValue( 'qwer' )
 		);
 	}
 	
 	public function testDeleteValueOnEmptyKey()
 	{
-		$this->assertFalse(
+		$this->assertEquals(0,
 			$this->object->deleteValue( 'asdf' )
 		);
 	}
@@ -59,15 +59,15 @@ class SetTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->addValue('asdf');
 		
-		$this->assertFalse(
+		$this->assertEquals(0,
 			$this->object->deleteValue( 'qwer' )
 		);
 		
-		$this->assertTrue(
+		$this->assertEquals(1,
 			$this->object->deleteValue( 'asdf' )
 		);
 		
-		$this->assertFalse(
+		$this->assertEquals(0,
 			$this->object->deleteValue( 'asdf' )
 		);
 		

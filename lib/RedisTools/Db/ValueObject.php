@@ -354,7 +354,7 @@ class ValueObject extends Core\Key
 	 */
     public static function __callStatic($name, $arguments) 
 	{
-        
+		
     }
 	
 	public static function findBy($propertyName, $value)

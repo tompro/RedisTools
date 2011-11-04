@@ -153,7 +153,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 
 	public function testDeletingKeyInNonExistingHash()
 	{
-		$this->assertFalse(
+		$this->assertEquals(0,
 			$this->object->deleteKey($this->testKey)
 		);
 	}
@@ -162,7 +162,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->set($this->testKey, $this->testValue);
 		
-		$this->assertFalse(
+		$this->assertEquals(0,
 			$this->object->deleteKey( 'somekey' )
 		);
 	}
@@ -171,7 +171,7 @@ class HashTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->set($this->testKey, $this->testValue);
 		
-		$this->assertTrue(
+		$this->assertEquals(1,
 			$this->object->deleteKey($this->testKey)
 		);
 	}
