@@ -151,6 +151,12 @@ class ValueObjectTest extends \PHPUnit_Framework_TestCase
 		);
 	}
 	
+	public function testStaticCalls()
+	{
+		ValueObjectDummy::asdf('first', 'second', 3);
+		
+	}
+	
 	
 }
 

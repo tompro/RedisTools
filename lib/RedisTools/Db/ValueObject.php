@@ -346,6 +346,25 @@ class ValueObject extends Core\Key
 		$this->isPersistent = $boolean;
 	}
 	
+	/**
+	 * Handles static query calls against a ValueObject type
+	 * 
+	 * @param string $name
+	 * @param array $arguments 
+	 */
+    public static function __callStatic($name, $arguments) 
+	{
+        
+    }
 	
+	public static function findBy($propertyName, $value)
+	{
+		
+	}
+	
+	public static function findByKey( $key )
+	{
+		
+	}
 
 }
