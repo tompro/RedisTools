@@ -41,6 +41,6 @@ class StringOperations
 	public function splitCamelCase($string) 
 	{
 		return preg_split('/(?<=\\w)(?=[A-Z])/', $string);
-	} 
+	}
 	
 }
